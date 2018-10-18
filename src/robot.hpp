@@ -3,9 +3,9 @@
 // This code is distrubuted under the MIT License, see LICENSE for details
 
 #include <Arduino.h>
-#import "constants.h"
-#import "utils.h"
-#import "serial.h"
+#include "constants.hpp"
+#include "util.hpp"
+#include "serial.hpp"
 
 // Main robot class with methods for initializing and updating subsystems
 class Robot {

@@ -11,8 +11,9 @@ Robot::Robot() {
 // Initializes everything
 void Robot::init() {
     // Start serial connection
-    Serial.begin(115200);
+    Serial.begin(constants::SerialBaudRate);
     Serial.println("Test");
+    Serial.println(serial::leftPad(3, 3, '0'));
 }
 
 // Update function, called in a loop
