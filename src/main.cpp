@@ -2,17 +2,14 @@
 // Copyright (c) 2018 jackw01
 // This code is distrubuted under the MIT License, see LICENSE for details
 
-#include <Arduino.h>
+#include "robot.hpp"
 
-#include "serial.h"
+Robot robot;
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println("Test");
-  Serial.print(pad(1, 3, "0"));
-  Serial.println("end");
+  robot.init();
 }
 
 void loop() {
-
+  robot.tick();
 }

@@ -5,8 +5,6 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#include <Arduino.h>
-
 static char *pad(int n, int size, char *padChar) {
   char string[8];
   itoa(n, string, 10);
