@@ -37,6 +37,6 @@ void Comms::writeOut(uint8_t byte) {
   Serial.write(byte);
 }
 
-void Comms::writeOut(char* bytes) {
+void Comms::writeOut(const char* bytes) {
   Serial.write(bytes);
 }

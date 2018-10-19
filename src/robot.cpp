@@ -4,7 +4,6 @@
 
 #include "robot.hpp"
 
-// Constructor
 Robot::Robot() {
 }
 
@@ -12,7 +11,7 @@ Robot::Robot() {
 void Robot::init() {
     // Start serial connection
     Serial.begin(constants::SerialBaudRate);
-    Comms::writePacket(0, "a");
+    Comms::writePacket(255, "abc");
 }
 
 // Update function, called in a loop
