@@ -6,4 +6,6 @@
 
 namespace constants {
   static const long SerialBaudRate = 115200;
+  static const uint8_t PacketMarkerByte = '\\';
+  static const uint8_t PacketSeparatorByte = ' ';
 }

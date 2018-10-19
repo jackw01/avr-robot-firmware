@@ -5,7 +5,7 @@
 #include <Arduino.h>
 #include "constants.hpp"
 #include "util.hpp"
-#include "serial.hpp"
+#include "comms.hpp"
 
 // Main robot class with methods for initializing and updating subsystems
 class Robot {
