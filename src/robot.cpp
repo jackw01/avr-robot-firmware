@@ -22,7 +22,7 @@ void Robot::tick() {
     if (packetIndex == 0 && nextByte == PacketMarkerByte) { // Packet start
       packetIndex++;
     } else if (packetIndex >= 1 && packetIndex <= 3) { // Packet type (3-digit number)
-      if (nextByte >= 48 && nextByte <= 57) { // Is digit?
+      if (nextByte >= 48 && nextByte <= 57) { // If digit, set correct place value
         packetType += (uint8_t)pow(10, 3 - packetIndex) * (nextByte - 48);
         packetIndex++;
       } else { // If not, reject packet
@@ -42,23 +42,28 @@ void Robot::tick() {
     } else if (packetIndex - 5 == sizeof(incomingPacket) || nextByte == PacketMarkerByte) { // Reached end of packet
       // Parse arguments
       float args[4];
-      uint8_t i = 0, lastIndex = 0;
-
-      while (i < sizeof(args) && lastIndex < packetIndex - 5) {
-        char* argString[8];
-        uint8_t j;
-        for (j = lastIndex; j < packetIndex - 5; j++) {
-          if (incomingPacket[j] == PacketSeparatorByte) break; // Separator between args
-          else argString[j - lastIndex] = incomingPacket[j];
+      for (uint8_t i = 0, startIndex = 0; i < sizeof(args) / sizeof(float); i++) { // Iterate through possible args
+        if (startIndex < packetIndex - 5) {
+          char* argString = new char[8];
+          uint8_t j;
+          for (j = startIndex; j < packetIndex - 5; j++) { // Iterate through bytes until end of packet
+            if (incomingPacket[j] == PacketSeparatorByte) break; // Break if end of argument or packet detected
+            else argString[j - startIndex] = incomingPacket[j]; // Copy the next byte
+          }
+          argString[j] = '\0';
+          startIndex = j + 1; // Set start index after each argument
+          args[i] = atof((const char *)argString); // Convert to float
+        } else { // If end of packet reached, just set remaining args to 0
+          args[i] = 0;
         }
-        argString[j] = '\0';
-        lastIndex = j + 1;
-        args[i] = atof((const char *)&argString);
-        i++;
       }
 
       // Run command
+      Serial.println("a");
       Serial.println(args[0]);
+      Serial.println(args[1]);
+      Serial.println(args[2]);
+      Serial.println(args[3]);
 
       packetIndex = 0;
       packetType = 0;
