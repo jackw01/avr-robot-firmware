@@ -7,3 +7,10 @@
 Drive::Drive() {
 
 }
+
+// Set power of motors in open loop mode
+void Drive::setOpenLoopPower(float leftPower, float rightPower) {
+    moving = !(leftPower == 0 && rightPower == 0);
+    leftMotor.setSpeed(leftPower);
+    rightMotor.setSpeed(rightPower);
+}

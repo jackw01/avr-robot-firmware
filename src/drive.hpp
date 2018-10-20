@@ -3,9 +3,26 @@
 // This code is distrubuted under the MIT License, see LICENSE for details
 
 #include <stdint.h>
+#include "hbridgemotor.hpp"
+#include "constants.hpp"
 
 // A differential drivebase with one motor driving each side's wheels
 class Drive {
   public:
     Drive();
+
+    void setOpenLoopPower(float leftPower, float rightPower);
+
+    bool getMoving();
+
+  private:
+    HBridgeMotor leftMotor = HBridgeMotor(constants::PinMotorLPWM, constants::PinMotorLDir);
+    HBridgeMotor rightMotor = HBridgeMotor(constants::PinMotorRPWM, constants::PinMotorRDir);
+
+    bool moving;
 };
+
+// Get whether robot is moving
+bool Drive::getMoving() {
+    return moving;
+}
