@@ -4,12 +4,16 @@
 
 #include "comms.hpp"
 
+void Comms::init() {
+  Serial.begin(SerialBaudRate);
+}
+
 void Comms::writePacket(uint8_t dataType, char* data) {
-  writeOut(constants::PacketMarkerByte); // Tell the computer that the packet has started
+  writeOut(PacketMarkerByte); // Tell the computer that the packet has started
   writeOut(leftPad(dataType, 3, '0')); // Tell the computer what is being sent
-  writeOut(constants::PacketSeparatorByte);
+  writeOut(PacketSeparatorByte);
   writeOut(data); // Send the data
-  writeOut(constants::PacketMarkerByte); // Tell the computer that the packet has ended
+  writeOut(PacketMarkerByte); // Tell the computer that the packet has ended
 }
 
 void Comms::writePacket(uint8_t dataType, int data) {
@@ -31,6 +35,14 @@ char* Comms::leftPad(int n, int size, char padChar) {
   for (int i = 0; i < size - len - 1; i++) strcat(buffer, padString);
   strcat(buffer, string);
   return buffer;
+}
+
+int Comms::getAvailable() {
+  return Serial.available();
+}
+
+uint8_t Comms::nextByte() {
+  return Serial.read();
 }
 
 void Comms::writeOut(uint8_t byte) {

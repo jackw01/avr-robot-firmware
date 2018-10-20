@@ -16,8 +16,8 @@ class Drive {
     bool getMoving();
 
   private:
-    HBridgeMotor leftMotor = HBridgeMotor(constants::PinMotorLPWM, constants::PinMotorLDir);
-    HBridgeMotor rightMotor = HBridgeMotor(constants::PinMotorRPWM, constants::PinMotorRDir);
+    HBridgeMotor leftMotor = HBridgeMotor(PinMotorLPWM, PinMotorLDir);
+    HBridgeMotor rightMotor = HBridgeMotor(PinMotorRPWM, PinMotorRDir);
 
     bool moving;
 };
