@@ -17,7 +17,6 @@ class Robot {
   private:
     // Communication
     uint8_t incomingPacket[24];
-    float packetArgs[4];
     uint8_t packetIndex = 0;
     uint8_t packetType = 0;
 };

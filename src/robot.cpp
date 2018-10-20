@@ -40,9 +40,25 @@ void Robot::tick() {
       incomingPacket[packetIndex - 5] = nextByte;
       packetIndex ++;
     } else if (packetIndex - 5 == sizeof(incomingPacket) || nextByte == PacketMarkerByte) { // Reached end of packet
-      // Turn args into floats?
+      // Parse arguments
+      float args[4];
+      uint8_t i = 0, lastIndex = 0;
+
+      while (i < sizeof(args) && lastIndex < packetIndex - 5) {
+        char* argString[8];
+        uint8_t j;
+        for (j = lastIndex; j < packetIndex - 5; j++) {
+          if (incomingPacket[j] == PacketSeparatorByte) break; // Separator between args
+          else argString[j - lastIndex] = incomingPacket[j];
+        }
+        argString[j] = '\0';
+        lastIndex = j + 1;
+        args[i] = atof((const char *)&argString);
+        i++;
+      }
 
       // Run command
+      Serial.println(args[0]);
 
       packetIndex = 0;
       packetType = 0;
