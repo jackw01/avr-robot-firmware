@@ -6,5 +6,16 @@
 
 namespace util {
 
-  
+  static uint8_t pow10(uint8_t n) {
+    switch (n) {
+      case 0:
+        return 1;
+      case 1:
+        return 10;
+      case 2:
+        return 100;
+      default:
+        return 1;
+    }
+  }
 }

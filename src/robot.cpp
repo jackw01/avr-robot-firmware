@@ -24,10 +24,10 @@ void Robot::tick() {
     if (parseIncomingPackets(Comms::getNextByte())) { // While data is available, process next byte
       Serial.println();
       Serial.println(packetType);
-      Serial.println(packetContents[0]);
-      Serial.println(packetContents[1]);
-      Serial.println(packetContents[2]);
-      Serial.println(packetContents[3]);
+      Serial.println(packetContents[0], 4);
+      Serial.println(packetContents[1], 4);
+      Serial.println(packetContents[2], 4);
+      Serial.println(packetContents[3], 4);
     }
   }
 }
@@ -36,12 +36,12 @@ void Robot::tick() {
 bool Robot::parseIncomingPackets(uint8_t nextByte) {
   Serial.write(nextByte);
   if (packetIndex == 0 && nextByte == PacketMarkerByte) { // Packet start
-    memset(incomingPacket, 0, sizeof(incomingPacket));
+    memset(incomingPacket, 0, 24);
     packetIndex++;
     packetType = 0;
   } else if (packetIndex >= 1 && packetIndex <= 3) { // Packet type (3-digit number)
     if (nextByte >= 48 && nextByte <= 57) { // If digit, set correct place value
-      packetType += (uint8_t)pow(10, 3 - packetIndex) * (nextByte - 48);
+      packetType += util::pow10(3 - packetIndex) * (nextByte - 48);
       packetIndex++;
     } else { // If not, reject packet
       packetIndex = 0;
@@ -61,15 +61,14 @@ bool Robot::parseIncomingPackets(uint8_t nextByte) {
     // Parse arguments
     for (uint8_t i = 0, startIndex = 0; i < sizeof(packetContents) / sizeof(float); i++) { // Go through args
       if (startIndex < packetIndex - 5) {
-        char* argString = "        ";
-        //memset(argString, '\0', sizeof(argString));
+        char* argString = new char[8];
+        memset(argString, 0, 8);
         uint8_t j;
         for (j = startIndex; j < packetIndex - 5; j++) { // Iterate through bytes until end of packet
           if (incomingPacket[j] == PacketSeparatorByte) break; // Break if end of argument or packet detected
           else argString[j - startIndex] = incomingPacket[j]; // Copy the next byte
         }
         argString[j] = '\0';
-        Serial.println(argString);
         startIndex = j + 1; // Set start index after each argument
         packetContents[i] = atof((const char *)argString); // Convert to float
       } else { // If end of packet reached, just set remaining args to 0
