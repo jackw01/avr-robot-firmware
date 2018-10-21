@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include "constants.hpp"
 #include "util.hpp"
+#include "drive.hpp"
 #include "comms.hpp"
 
 // Main robot class with methods for initializing and updating subsystems
@@ -15,8 +16,17 @@ class Robot {
     void tick();
 
   private:
+    // Subsystems
+    Drive drive = Drive();
+
+    // Timing
+    long microseconds;
+    long lastMicroseconds;
+
     // Communication
+    bool parseIncomingPackets(uint8_t nextByte);
     uint8_t incomingPacket[24];
     uint8_t packetIndex = 0;
     uint8_t packetType = 0;
+    float packetContents[4];
 };

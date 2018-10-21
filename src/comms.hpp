@@ -15,7 +15,7 @@ class Comms {
     static void writePacket(uint8_t dataType, char* data);
     static void writePacket(uint8_t dataType, int data);
     static int getAvailable();
-    static uint8_t nextByte();
+    static uint8_t getNextByte();
   private:
     static void writeOut(uint8_t byte);
     static void writeOut(const char* bytes);

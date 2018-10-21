@@ -21,8 +21,3 @@ class Drive {
 
     bool moving;
 };
-
-// Get whether robot is moving
-bool Drive::getMoving() {
-    return moving;
-}

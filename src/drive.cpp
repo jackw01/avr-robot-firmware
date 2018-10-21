@@ -14,3 +14,8 @@ void Drive::setOpenLoopPower(float leftPower, float rightPower) {
   leftMotor.setSpeed(leftPower);
   rightMotor.setSpeed(rightPower);
 }
+
+// Get whether robot is moving
+bool Drive::getMoving() {
+    return moving;
+}

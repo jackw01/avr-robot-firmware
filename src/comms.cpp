@@ -41,7 +41,7 @@ int Comms::getAvailable() {
   return Serial.available();
 }
 
-uint8_t Comms::nextByte() {
+uint8_t Comms::getNextByte() {
   return Serial.read();
 }
 
