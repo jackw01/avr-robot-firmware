@@ -9,9 +9,7 @@ Robot::Robot() {
 
 // Initializes everything
 void Robot::init() {
-  // Start serial connection
-  Comms::init();
-  Comms::writePacket(255, "abc");
+  Comms::init(); // Start serial connection
 }
 
 // Update function, called in a loop
@@ -22,19 +20,13 @@ void Robot::tick() {
   // Check for available data and parse packets
   while (Comms::getAvailable() > 0) {
     if (parseIncomingPackets(Comms::getNextByte())) { // While data is available, process next byte
-      Serial.println();
-      Serial.println(packetType);
-      Serial.println(packetContents[0], 4);
-      Serial.println(packetContents[1], 4);
-      Serial.println(packetContents[2], 4);
-      Serial.println(packetContents[3], 4);
+      Comms::writePacket(packetType, packetContents, 4);
     }
   }
 }
 
 // Parse packets in incoming data. Returns true if a packet is found.
 bool Robot::parseIncomingPackets(uint8_t nextByte) {
-  Serial.write(nextByte);
   if (packetIndex == 0 && nextByte == PacketMarkerByte) { // Packet start
     memset(incomingPacket, 0, 24);
     packetIndex++;

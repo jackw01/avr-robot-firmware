@@ -17,9 +17,31 @@ void Comms::writePacket(uint8_t dataType, char* data) {
 }
 
 void Comms::writePacket(uint8_t dataType, int data) {
-  char* string = new char[8];
-  itoa(data, string, 10);
-  writePacket(dataType, string);
+  writePacket(dataType, toString(data));
+}
+
+void Comms::writePacket(uint8_t dataType, float data) {
+  writePacket(dataType, toString(data));
+}
+
+void Comms::writePacket(uint8_t dataType, int data[], size_t len) {
+  writeOut(PacketMarkerByte);
+  writeOut(leftPad(dataType, 3, '0'));
+  for (uint8_t i = 0; i < len; i++) {
+    writeOut(PacketSeparatorByte);
+    writeOut(toString(data[i]));
+  }
+  writeOut(PacketMarkerByte);
+}
+
+void Comms::writePacket(uint8_t dataType, float data[], size_t len) {
+  writeOut(PacketMarkerByte);
+  writeOut(leftPad(dataType, 3, '0'));
+  for (uint8_t i = 0; i < len; i++) {
+    writeOut(PacketSeparatorByte);
+    writeOut(toString(data[i]));
+  }
+  writeOut(PacketMarkerByte);
 }
 
 char* Comms::leftPad(int n, int size, char padChar) {
@@ -51,4 +73,16 @@ void Comms::writeOut(uint8_t byte) {
 
 void Comms::writeOut(const char* bytes) {
   Serial.write(bytes);
+}
+
+char* Comms::toString(int n) {
+  char* string = new char[CommsNumberWidth];
+  itoa(n, string, 10);
+  return string;
+}
+
+char* Comms::toString(float n) {
+  char* string = new char[CommsNumberWidth];
+  dtostrf(n, 0, CommsFloatPrecision, string);
+  return string;
 }
