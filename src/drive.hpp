@@ -3,6 +3,8 @@
 // This code is distrubuted under the MIT License, see LICENSE for details
 
 #include <stdint.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_L3GD20_U.h>
 #include "hbridgemotor.hpp"
 #include "constants.hpp"
 
@@ -10,6 +12,8 @@
 class Drive {
   public:
     Drive();
+
+    void calibrateGyro();
 
     void setOpenLoopPower(float leftPower, float rightPower);
 
@@ -20,4 +24,11 @@ class Drive {
     HBridgeMotor rightMotor = HBridgeMotor(PinMotorRPWM, PinMotorRDir);
 
     bool moving;
+
+    // Gyro
+    Adafruit_L3GD20_Unified gyro;
+    float gyroDriftX = 0;
+    float gyroDriftY = 0;
+    float gyroDriftZ = 0;
+    float lastGyroY;
 };
