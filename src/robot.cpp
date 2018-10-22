@@ -10,6 +10,8 @@ Robot::Robot() {
 // Initializes everything
 void Robot::init() {
   Comms::init(); // Start serial connection
+
+  drive.init();
 }
 
 // Update function, called in a loop
@@ -23,6 +25,8 @@ void Robot::tick() {
       Comms::writePacket(packetType, packetContents, 4);
     }
   }
+
+  drive.update();
 }
 
 // Parse packets in incoming data. Returns true if a packet is found.
