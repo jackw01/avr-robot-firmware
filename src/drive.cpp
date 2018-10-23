@@ -10,23 +10,26 @@ Drive::Drive() {
 // Init subystem and alibrate gyro
 void Drive::init() {
   // Set up gyro
-  gyro.enableAutoRange(true);
+  gyro.enableAutoRange(false);
   if (!gyro.begin()) Comms::writePacket(0, "L3GD30 I2C gyro not detected");
   else Comms::writePacket(0, "L3GD30 I2C gyro connected");
 
   // Calibrate
-  uint8_t samples = 100;  // Take a bunch of samples and average readings out
+  delay(200); // Wait first - gyro returns bad data if queried immediately after initialization
+  uint8_t samples = 20;  // Take a bunch of samples and average readings out
   for (uint8_t i = 0; i < samples; i++) {
     sensors_event_t event;
     gyro.getEvent(&event);
-    gyroDriftX += event.gyro.x * 0.025;
-    gyroDriftY += event.gyro.y * 0.025;
-    gyroDriftZ += event.gyro.z * 0.025;
+    gyroDriftX += event.gyro.x;
+    gyroDriftY += event.gyro.y;
+    gyroDriftZ += event.gyro.z;
     delay(25);
+    Comms::writePacket(2, event.gyro.y);
   }
-  gyroDriftX /= 100;
-  gyroDriftY /= 100;
-  gyroDriftZ /= 100;
+  gyroDriftX /= (float)samples;
+  gyroDriftY /= (float)samples;
+  gyroDriftZ /= (float)samples;
+  Comms::writePacket(1, gyroDriftY);
 }
 
 // Set power of motors in open loop mode
@@ -45,7 +48,8 @@ void Drive::update() {
 
     sensors_event_t event;
     gyro.getEvent(&event);
-    lastGyroY = event.gyro.y * GyroGainY * ((float)DriveControlLoopInterval / 1000000.0) - gyroDriftY;
+    lastGyroY = (event.gyro.y - gyroDriftY) * GyroGainY;
+    gyroAngleY += lastGyroY * ((float)DriveControlLoopInterval / 1000000.0);
 
     Comms::writePacket(0, lastGyroY);
   }

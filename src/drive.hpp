@@ -41,4 +41,5 @@ class Drive {
     float gyroDriftY = 0;
     float gyroDriftZ = 0;
     float lastGyroY;
+    float gyroAngleY = 0;
 };
