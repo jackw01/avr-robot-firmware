@@ -16,15 +16,14 @@ void Drive::init() {
 
   // Calibrate
   delay(200); // Wait first - gyro returns bad data if queried immediately after initialization
-  uint8_t samples = 20;  // Take a bunch of samples and average readings out
-  for (uint8_t i = 0; i < samples; i++) {
+  uint16_t samples = 1000;  // Take a bunch of samples and average readings out
+  for (uint16_t i = 0; i < samples; i++) {
     sensors_event_t event;
     gyro.getEvent(&event);
     gyroDriftX += event.gyro.x;
     gyroDriftY += event.gyro.y;
     gyroDriftZ += event.gyro.z;
-    delay(25);
-    Comms::writePacket(2, event.gyro.y);
+    delay(10);
   }
   gyroDriftX /= (float)samples;
   gyroDriftY /= (float)samples;
@@ -51,7 +50,7 @@ void Drive::update() {
     lastGyroY = (event.gyro.y - gyroDriftY) * GyroGainY;
     gyroAngleY += lastGyroY * ((float)DriveControlLoopInterval / 1000000.0);
 
-    Comms::writePacket(0, lastGyroY);
+    Comms::writePacket(0, gyroAngleY);
   }
 }
 

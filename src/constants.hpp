@@ -11,7 +11,7 @@ const uint8_t PinMotorRDir = 10;
 
 const long DriveControlLoopInterval = 25000; // in microseconds
 
-const float GyroGainY = 1.102313;
+const float GyroGainY = 1.01808880768;
 
 const long SerialBaudRate = 115200;
 const uint8_t PacketMarkerByte = '\\';
