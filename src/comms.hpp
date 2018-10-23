@@ -13,18 +13,21 @@
 class Comms {
   public:
     static void init();
-    static void writePacket(uint8_t dataType, char* data);
+    static void writePacket(uint8_t dataType, const char* data);
     static void writePacket(uint8_t dataType, int data);
     static void writePacket(uint8_t dataType, float data);
     static void writePacket(uint8_t dataType, int data[], size_t len);
     static void writePacket(uint8_t dataType, float data[], size_t len);
-    static char* leftPad(int n, int size, char padChar);
+    static void leftPad(int n, char* buffer, int size, char padChar);
     static int getAvailable();
     static uint8_t getNextByte();
 
   private:
+    static void writePacketStart(uint8_t dataType);
+    static void writePacketData(const char* data);
+    static void writePacketData(int data);
+    static void writePacketData(float data);
+    static void writePacketEnd();
     static void writeOut(uint8_t byte);
     static void writeOut(const char* bytes);
-    static char* toString(int n);
-    static char* toString(float n);
 };

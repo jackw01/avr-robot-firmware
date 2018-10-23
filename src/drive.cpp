@@ -47,7 +47,7 @@ void Drive::update() {
     gyro.getEvent(&event);
     lastGyroY = event.gyro.y * GyroGainY * ((float)DriveControlLoopInterval / 1000000.0) - gyroDriftY;
 
-    Comms::writePacket(0, getFreeRAM());
+    Comms::writePacket(0, lastGyroY);
   }
 }
 

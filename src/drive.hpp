@@ -8,8 +8,9 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_L3GD20_U.h>
 #include "hbridgemotor.hpp"
-#include "comms.hpp"
 #include "constants.hpp"
+#include "util.hpp"
+#include "comms.hpp"
 
 // A differential drivebase with one motor driving each side's wheels
 class Drive {
