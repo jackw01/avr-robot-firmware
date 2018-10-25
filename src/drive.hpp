@@ -27,8 +27,4 @@ class Drive {
     HBridgeMotor rightMotor = HBridgeMotor(PinMotorRPWM, PinMotorRDir);
 
     bool moving;
-
-    // Loop variables
-    long microseconds = 0;
-    long lastMicroseconds = 0;
 };

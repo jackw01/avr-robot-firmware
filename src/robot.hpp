@@ -22,8 +22,8 @@ class Robot {
     Drive drive = Drive();
 
     // Timing
-    long microseconds;
-    long lastMicroseconds;
+    long microseconds = 0;
+    long lastMicroseconds = 0;
 
     // Communication
     bool parseIncomingPackets(uint8_t nextByte);

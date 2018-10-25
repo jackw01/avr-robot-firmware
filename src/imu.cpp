@@ -13,6 +13,10 @@ void IMU::init() {
   gyro.enableAutoRange(false);
   if (!gyro.begin()) Comms::writePacket(0, "L3GD30 I2C gyro not detected");
   else Comms::writePacket(0, "L3GD30 I2C gyro connected");
+  if (!accel.begin()) Comms::writePacket(0, "LSM303D I2C accel not detected");
+  else Comms::writePacket(0, "LSM303D I2C accel connected");
+  if (!mag.begin()) Comms::writePacket(0, "LSM303D I2C mag not detected");
+  else Comms::writePacket(0, "LSM303D I2C mag connected");
 
   // Calibrate
   delay(200); // Wait first - gyro returns bad data if queried immediately after initialization
@@ -33,21 +37,15 @@ void IMU::init() {
 
 // Get latest values from sensors
 void IMU::update() {
-  microseconds = micros();
-  long deltaT = microseconds - lastMicroseconds; // Calculate time delta to rate limit the loop
-  if (deltaT > MainControlLoopInterval) {
-    lastMicroseconds = microseconds;
+  sensors_event_t event;
+  gyro.getEvent(&event);
+  lastGyroY = (event.gyro.y - gyroDriftY) * GyroGainY;
+  gyroAngleY += lastGyroY * ((float)MainControlLoopInterval / 1000000.0);
 
-    sensors_event_t event;
-    gyro.getEvent(&event);
-    lastGyroY = (event.gyro.y - gyroDriftY) * GyroGainY;
-    gyroAngleY += lastGyroY * ((float)DriveControlLoopInterval / 1000000.0);
-
-    Comms::writePacket(0, gyroAngleY);
-  }
+  Comms::writePacket(0, gyroAngleY);
 }
 
 // Get heading
 float IMU::getHeading() {
-    return gyroAngleY;
+  return gyroAngleY;
 }

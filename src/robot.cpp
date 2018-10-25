@@ -17,9 +17,6 @@ void Robot::init() {
 
 // Update function, called in a loop
 void Robot::tick() {
-  lastMicroseconds = microseconds;
-  microseconds = micros();
-
   // Check for available data and parse packets
   while (Comms::getAvailable() > 0) {
     if (parseIncomingPackets(Comms::getNextByte())) { // While data is available, process next byte
@@ -27,8 +24,16 @@ void Robot::tick() {
     }
   }
 
-  imu.update();
-  drive.update();
+  // Do timing-sensitive things
+  microseconds = micros();
+  long deltaT = microseconds - lastMicroseconds; // Calculate time delta to rate limit the loop
+  if (deltaT > MainControlLoopInterval) {
+    lastMicroseconds = microseconds;
+
+    // Update subsystems
+    imu.update();
+    drive.update();
+  }
 }
 
 // Parse packets in incoming data. Returns true if a packet is found.

@@ -20,12 +20,7 @@ void Drive::setOpenLoopPower(float leftPower, float rightPower) {
 
 // Update drivebase
 void Drive::update() {
-  microseconds = micros();
-  long deltaT = microseconds - lastMicroseconds; // Calculate time delta to rate limit the loop
-  if (deltaT > MainControlLoopInterval) {
-    lastMicroseconds = microseconds;
-
-  }
+  
 }
 
 // Get whether robot is moving

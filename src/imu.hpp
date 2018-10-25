@@ -7,6 +7,7 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_L3GD20_U.h>
+#include <Adafruit_LSM303_U.h>
 #include "constants.hpp"
 #include "util.hpp"
 #include "comms.hpp"
@@ -25,13 +26,11 @@ class IMU {
   private:
     // Gyro
     Adafruit_L3GD20_Unified gyro;
+    Adafruit_LSM303_Accel_Unified accel;
+    Adafruit_LSM303_Mag_Unified mag;
     float gyroDriftX = 0;
     float gyroDriftY = 0;
     float gyroDriftZ = 0;
     float lastGyroY;
     float gyroAngleY = 0;
-
-    // Loop variables
-    long microseconds = 0;
-    long lastMicroseconds = 0;
 };
