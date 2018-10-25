@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include "constants.hpp"
 #include "util.hpp"
+#include "imu.hpp"
 #include "drive.hpp"
 #include "comms.hpp"
 
@@ -17,6 +18,7 @@ class Robot {
 
   private:
     // Subsystems
+    IMU imu = IMU();
     Drive drive = Drive();
 
     // Timing

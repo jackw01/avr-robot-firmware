@@ -4,29 +4,32 @@
 
 #include <stdint.h>
 #include <Arduino.h>
-#include "hbridgemotor.hpp"
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_L3GD20_U.h>
 #include "constants.hpp"
 #include "util.hpp"
 #include "comms.hpp"
 
-// A differential drivebase with one motor driving each side's wheels
-class Drive {
+// Container for all inertial sensors
+class IMU {
   public:
-    Drive();
+    IMU();
 
     void init();
 
-    void setOpenLoopPower(float leftPower, float rightPower);
-
     void update();
 
-    bool getMoving();
+    float getHeading();
 
   private:
-    HBridgeMotor leftMotor = HBridgeMotor(PinMotorLPWM, PinMotorLDir);
-    HBridgeMotor rightMotor = HBridgeMotor(PinMotorRPWM, PinMotorRDir);
-
-    bool moving;
+    // Gyro
+    Adafruit_L3GD20_Unified gyro;
+    float gyroDriftX = 0;
+    float gyroDriftY = 0;
+    float gyroDriftZ = 0;
+    float lastGyroY;
+    float gyroAngleY = 0;
 
     // Loop variables
     long microseconds = 0;

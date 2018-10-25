@@ -11,6 +11,7 @@ Robot::Robot() {
 void Robot::init() {
   Comms::init(); // Start serial connection
 
+  imu.init();
   drive.init();
 }
 
@@ -26,6 +27,7 @@ void Robot::tick() {
     }
   }
 
+  imu.update();
   drive.update();
 }
 

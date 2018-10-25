@@ -9,7 +9,7 @@ const uint8_t PinMotorLDir = 7;
 const uint8_t PinMotorRPWM = 11;
 const uint8_t PinMotorRDir = 10;
 
-const long DriveControlLoopInterval = 25000; // in microseconds
+const long MainControlLoopInterval = 25000; // in microseconds
 
 const float GyroGainY = 1.01808880768;
 
