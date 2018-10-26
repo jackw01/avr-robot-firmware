@@ -27,12 +27,17 @@ void Robot::tick() {
   // Do timing-sensitive things
   microseconds = micros();
   long deltaT = microseconds - lastMicroseconds; // Calculate time delta to rate limit the loop
-  if (deltaT > MainControlLoopInterval) {
+  if (deltaT > MainControlLoopIntervalUs) {
     lastMicroseconds = microseconds;
 
     // Update subsystems
     imu.update();
+    vec3 gyroOrientation = imu.getGyroOrientation();
+
     drive.update();
+
+    // Send general data
+    Comms::writePacket(DataTypeOdometry)
   }
 }
 

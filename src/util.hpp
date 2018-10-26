@@ -4,6 +4,23 @@
 
 #pragma once
 
+// Type for 3D vector data - taken from Adafruit Unified Sensor with some fields removed
+typedef struct{
+  union {
+    float v[3];
+    struct {
+      float x;
+      float y;
+      float z;
+    };
+    struct {
+      float roll;
+      float pitch;
+      float heading;
+    };
+  };
+} vec3;
+
 namespace util {
 
   static uint8_t pow10(uint8_t n) {

@@ -18,19 +18,20 @@ class IMU {
     IMU();
 
     void init();
+    void calibrateGyro();
 
     void update();
 
-    float getHeading();
+    float getGyroOrientation();
 
   private:
-    // Gyro
+    // Sensors
     Adafruit_L3GD20_Unified gyro;
     Adafruit_LSM303_Accel_Unified accel;
     Adafruit_LSM303_Mag_Unified mag;
-    float gyroDriftX = 0;
-    float gyroDriftY = 0;
-    float gyroDriftZ = 0;
-    float lastGyroY;
-    float gyroAngleY = 0;
+
+    // Gyro
+    vec3 gyroDrift;
+    vec3 lastGyro;
+    vec3 currentGyro;
 };

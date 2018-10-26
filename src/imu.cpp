@@ -17,35 +17,38 @@ void IMU::init() {
   else Comms::writePacket(0, "LSM303D I2C accel connected");
   if (!mag.begin()) Comms::writePacket(0, "LSM303D I2C mag not detected");
   else Comms::writePacket(0, "LSM303D I2C mag connected");
-
-  // Calibrate
   delay(200); // Wait first - gyro returns bad data if queried immediately after initialization
+}
+
+// Calibrate gyro
+void IMU::calibrateGyro() {
   uint16_t samples = 1000;  // Take a bunch of samples and average readings out
   for (uint16_t i = 0; i < samples; i++) {
     sensors_event_t event;
     gyro.getEvent(&event);
-    gyroDriftX += event.gyro.x;
-    gyroDriftY += event.gyro.y;
-    gyroDriftZ += event.gyro.z;
+    gyroDrift.x += event.gyro.x;
+    gyroDrift.y += event.gyro.y;
+    gyroDrift.z += event.gyro.z;
     delay(10);
   }
-  gyroDriftX /= (float)samples;
-  gyroDriftY /= (float)samples;
-  gyroDriftZ /= (float)samples;
-  Comms::writePacket(1, gyroDriftY);
+  gyroDrift.x /= (float)samples;
+  gyroDrift.y /= (float)samples;
+  gyroDrift.z /= (float)samples;
 }
 
 // Get latest values from sensors
 void IMU::update() {
   sensors_event_t event;
   gyro.getEvent(&event);
-  lastGyroY = (event.gyro.y - gyroDriftY) * GyroGainY;
-  gyroAngleY += lastGyroY * ((float)MainControlLoopInterval / 1000000.0);
-
-  Comms::writePacket(0, gyroAngleY);
+  lastGyro.roll = (event.gyro.v[IMURollAxis] - gyroDrift.v[IMURollAxis]) * GyroGain.v[IMURollAxis];
+  lastGyro.pitch = (event.gyro.v[IMUPitchAxis] - gyroDrift.v[IMUPitchAxis]) * GyroGain.v[IMUPitchAxis];
+  lastGyro.heading = (event.gyro.v[IMUHeadingAxis] - gyroDrift.v[IMUHeadingAxis]) * GyroGain.v[IMUHeadingAxis];
+  currentGyro.roll += lastGyro.roll * MainControlLoopIntervalS;
+  currentGyro.pitch += lastGyro.pitch * MainControlLoopIntervalS;
+  currentGyro.heading += lastGyro.heading * MainControlLoopIntervalS;
 }
 
-// Get heading
-float IMU::getHeading() {
-  return gyroAngleY;
+// Get orientation
+float IMU::getGyroOrientation() {
+  return currentGyro;
 }
