@@ -21,8 +21,7 @@ class IMU {
     void calibrateGyro();
 
     void update();
-
-    float getGyroOrientation();
+    vec3 getGyroOrientation();
 
   private:
     // Sensors
@@ -31,7 +30,7 @@ class IMU {
     Adafruit_LSM303_Mag_Unified mag;
 
     // Gyro
-    vec3 gyroDrift;
+    vec3 gyroOffset;
     vec3 lastGyro;
     vec3 currentGyro;
 };

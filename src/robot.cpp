@@ -13,6 +13,8 @@ void Robot::init() {
 
   imu.init();
   drive.init();
+
+  imu.calibrateGyro();
 }
 
 // Update function, called in a loop
@@ -37,7 +39,7 @@ void Robot::tick() {
     drive.update();
 
     // Send general data
-    Comms::writePacket(DataTypeOdometry)
+    Comms::writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
   }
 }
 

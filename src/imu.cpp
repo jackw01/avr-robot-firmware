@@ -22,33 +22,33 @@ void IMU::init() {
 
 // Calibrate gyro
 void IMU::calibrateGyro() {
-  uint16_t samples = 1000;  // Take a bunch of samples and average readings out
+  uint16_t samples = 500;  // Take a bunch of samples and average readings out
   for (uint16_t i = 0; i < samples; i++) {
     sensors_event_t event;
     gyro.getEvent(&event);
-    gyroDrift.x += event.gyro.x;
-    gyroDrift.y += event.gyro.y;
-    gyroDrift.z += event.gyro.z;
+    gyroOffset.x += event.gyro.x;
+    gyroOffset.y += event.gyro.y;
+    gyroOffset.z += event.gyro.z;
     delay(10);
   }
-  gyroDrift.x /= (float)samples;
-  gyroDrift.y /= (float)samples;
-  gyroDrift.z /= (float)samples;
+  gyroOffset.x /= (float)samples;
+  gyroOffset.y /= (float)samples;
+  gyroOffset.z /= (float)samples;
 }
 
 // Get latest values from sensors
 void IMU::update() {
   sensors_event_t event;
   gyro.getEvent(&event);
-  lastGyro.roll = (event.gyro.v[IMURollAxis] - gyroDrift.v[IMURollAxis]) * GyroGain.v[IMURollAxis];
-  lastGyro.pitch = (event.gyro.v[IMUPitchAxis] - gyroDrift.v[IMUPitchAxis]) * GyroGain.v[IMUPitchAxis];
-  lastGyro.heading = (event.gyro.v[IMUHeadingAxis] - gyroDrift.v[IMUHeadingAxis]) * GyroGain.v[IMUHeadingAxis];
+  lastGyro.roll = (event.gyro.v[IMURollAxis] - gyroOffset.v[IMURollAxis]) * GyroGain.v[IMURollAxis];
+  lastGyro.pitch = (event.gyro.v[IMUPitchAxis] - gyroOffset.v[IMUPitchAxis]) * GyroGain.v[IMUPitchAxis];
+  lastGyro.heading = (event.gyro.v[IMUHeadingAxis] - gyroOffset.v[IMUHeadingAxis]) * GyroGain.v[IMUHeadingAxis];
   currentGyro.roll += lastGyro.roll * MainControlLoopIntervalS;
   currentGyro.pitch += lastGyro.pitch * MainControlLoopIntervalS;
   currentGyro.heading += lastGyro.heading * MainControlLoopIntervalS;
 }
 
 // Get orientation
-float IMU::getGyroOrientation() {
+vec3 IMU::getGyroOrientation() {
   return currentGyro;
 }

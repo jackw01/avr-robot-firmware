@@ -35,4 +35,4 @@ const uint8_t CommsFloatPrecision = 4;
 
 // Datatypes
 const unsigned char DataTypeHumanReadable = 0;    // Expected: string
-const unsigned char DataTypeOdometry = 2;         // Expected: float[3]
+const unsigned char DataTypeGyro = 2;             // Expected: float[3]

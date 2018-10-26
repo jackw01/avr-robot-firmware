@@ -20,10 +20,10 @@ void Drive::setOpenLoopPower(float leftPower, float rightPower) {
 
 // Update drivebase
 void Drive::update() {
-  
+
 }
 
 // Get whether robot is moving
 bool Drive::getMoving() {
-    return moving;
+  return moving;
 }
