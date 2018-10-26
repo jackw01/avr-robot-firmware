@@ -9,12 +9,20 @@ Robot::Robot() {
 
 // Initializes everything
 void Robot::init() {
+  leds.init(); // Turn on status lights before anything else
+  leds.setAll(ColorOrange);
+
   Comms::init(); // Start serial connection
 
+  // Init subsystems
   imu.init();
   drive.init();
 
   imu.calibrateGyro();
+
+  // Done
+  leds.setAll(ColorGreen);
+  Comms::writePacket(DataTypeHumanReadable, "Initialization complete");
 }
 
 // Update function, called in a loop
@@ -39,7 +47,7 @@ void Robot::tick() {
     drive.update();
 
     // Send general data
-    Comms::writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
+    //Comms::writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
   }
 }
 
@@ -51,7 +59,7 @@ bool Robot::parseIncomingPackets(uint8_t nextByte) {
     packetType = 0;
   } else if (packetIndex >= 1 && packetIndex <= 3) { // Packet type (3-digit number)
     if (nextByte >= 48 && nextByte <= 57) { // If digit, set correct place value
-      packetType += util::pow10(3 - packetIndex) * (nextByte - 48);
+      packetType += pow10(3 - packetIndex) * (nextByte - 48);
       packetIndex++;
     } else { // If not, reject packet
       packetIndex = 0;

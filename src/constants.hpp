@@ -5,12 +5,14 @@
 #pragma once
 
 #include "util.hpp"
+#include <FastLED.h>
 
 // Pin mapping
 const uint8_t PinMotorLPWM = 6;
 const uint8_t PinMotorLDir = 7;
 const uint8_t PinMotorRPWM = 11;
 const uint8_t PinMotorRDir = 10;
+const uint8_t PinLEDs = 13;
 
 // Drive control
 const long MainControlLoopIntervalUs = 25000;
@@ -24,6 +26,20 @@ const uint8_t IMUHeadingAxis = 1;
 
 // Calibration data
 const vec3 GyroGain = {1.0, 1.0180888, 1.0};
+
+// Misc features
+// LEDs
+const uint8_t LEDCount = 4;
+const uint8_t LEDMasterBrightness = 32;
+const CRGB ColorRed = CRGB(255, 0, 0);
+const CRGB ColorOrange = CRGB(255, 60, 0);
+const CRGB ColorYellow = CRGB(255, 237, 0);
+const CRGB ColorGreen = CRGB(0, 255, 10);
+const CRGB ColorCyan = CRGB(0, 247, 255);
+const CRGB ColorBlue = CRGB(0, 21, 255);
+const CRGB ColorMagenta = CRGB(190, 0, 255);
+const CRGB ColorWhite = CRGB(255, 255, 255);
+const CRGB ColorOff = CRGB(0, 0, 0);
 
 // Communication
 // Serial settings

@@ -21,22 +21,21 @@ typedef struct{
   };
 } vec3;
 
-namespace util {
-
-  static uint8_t pow10(uint8_t n) {
-    switch (n) {
-      case 0:
-        return 1;
-      case 1:
-        return 10;
-      case 2:
-        return 100;
-      default:
-        return 1;
-    }
+// Fast power of 10 for low numbers
+static uint8_t pow10(uint8_t n) {
+  switch (n) {
+    case 0:
+      return 1;
+    case 1:
+      return 10;
+    case 2:
+      return 100;
+    default:
+      return 1;
   }
 }
 
+// Get free RAM - found somewhere on Stackoverflow
 static int getFreeRAM() {
   extern int __heap_start, *__brkval;
   int v;

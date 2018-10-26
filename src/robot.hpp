@@ -5,9 +5,10 @@
 #include <Arduino.h>
 #include "constants.hpp"
 #include "util.hpp"
+#include "comms.hpp"
 #include "imu.hpp"
 #include "drive.hpp"
-#include "comms.hpp"
+#include "leds.hpp"
 
 // Main robot class with methods for initializing and updating subsystems
 class Robot {
@@ -20,6 +21,7 @@ class Robot {
     // Subsystems
     IMU imu = IMU();
     Drive drive = Drive();
+    LEDs leds = LEDs();
 
     // Timing
     long microseconds = 0;
