@@ -4,8 +4,13 @@
 
 #pragma once
 
-#include "util.hpp"
+#include <math.h>
 #include <FastLED.h>
+#include "util.hpp"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 // Pin mapping
 const uint8_t PinMotorLPWM = 6;
@@ -20,6 +25,19 @@ const float MainControlLoopIntervalS = (float)MainControlLoopIntervalUs / 100000
 const float DriveP = 200.0;
 const float DriveI = 400.0;
 const float DriveD = 0.0;
+
+// Drive hardware constants
+const float EncoderCPR = 3.0;
+const float GearRatio = 51.44615;
+const float LeftWheelDiameter = 33.6;
+const float RightWheelDiameter = 32.0;
+const float LeftWheelCircumference = LeftWheelDiameter * M_PI;
+const float RightWheelCircumference = RightWheelDiameter * M_PI;
+const float WheelCircumference = (LeftWheelCircumference + RightWheelCircumference) / 2.0;
+const float LeftWheelCorrectionFactor = LeftWheelDiameter / fmin(LeftWheelDiameter, RightWheelDiameter);
+const float RightWheelCorrectionFactor = RightWheelDiameter / fmin(LeftWheelDiameter, RightWheelDiameter);
+const float TrackDiameter = 82.0;
+const float SpeedDeadband = 0.0;
 
 // IMU
 // IMU axis mapping (0,1,2 represent x,y,z)

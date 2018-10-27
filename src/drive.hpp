@@ -13,28 +13,51 @@
 
 // A differential drivebase with one motor driving each side's wheels
 class Drive {
+  typedef struct DriveSignal {
+    float left;
+    float right;
+  } DriveSignal;
+
   public:
     Drive();
 
     void init();
+    void resetDistanceCounter();
 
     void setOpenLoopPower(float leftPower, float rightPower);
+    void setVelocitySetpoint(DriveSignal velocity);
 
     // PID
-    void setPID(double p, double i, double d);
+    void setPID(float p, float i, float d);
 
     void update();
 
     bool getMoving();
+    DriveSignal getDistance();
+    DriveSignal getVelocity();
 
   private:
-    // Motors/encoders
+    // Motors
     HBridgeMotor leftMotor = HBridgeMotor(PinMotorLPWM, PinMotorLDir);
     HBridgeMotor rightMotor = HBridgeMotor(PinMotorRPWM, PinMotorRDir);
+
+    // Encoder counter
+    long prevLeftTicks = 0;
+    long prevRightTicks = 0;
+
+    // Convert between encoder ticks and distance
+    float encoderTicksToDistance(long ticks);
+    long distanceToEncoderTicks(float distance);
+
+    // Loop
+    long microseconds = 0;
+    long prevMicros = 0;
 
     bool moving;
 
     // Control loops
     PID leftVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);
     PID rightVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);
+
+    float initialLeftVelocitySetpoint, initialRightVelocitySetpoint;
 };
