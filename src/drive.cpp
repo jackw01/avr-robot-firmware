@@ -9,6 +9,7 @@ Drive::Drive() {
 
 // Init subystem
 void Drive::init() {
+  moving = false;
 }
 
 // Set power of motors in open loop mode
@@ -16,6 +17,12 @@ void Drive::setOpenLoopPower(float leftPower, float rightPower) {
   moving = !(leftPower == 0 && rightPower == 0);
   leftMotor.setSpeed(leftPower);
   rightMotor.setSpeed(rightPower);
+}
+
+// Set PID
+void Drive::setPID(double p, double i, double d) {
+    leftVelocityPID.setPID(p, i, d);
+    rightVelocityPID.setPID(p, i, d);
 }
 
 // Update drivebase

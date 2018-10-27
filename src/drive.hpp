@@ -4,6 +4,8 @@
 
 #include <stdint.h>
 #include <Arduino.h>
+#include <pidcontroller.h>
+#include <pidautotuner.h>
 #include "hbridgemotor.hpp"
 #include "constants.hpp"
 #include "util.hpp"
@@ -18,13 +20,21 @@ class Drive {
 
     void setOpenLoopPower(float leftPower, float rightPower);
 
+    // PID
+    void setPID(double p, double i, double d);
+
     void update();
 
     bool getMoving();
 
   private:
+    // Motors/encoders
     HBridgeMotor leftMotor = HBridgeMotor(PinMotorLPWM, PinMotorLDir);
     HBridgeMotor rightMotor = HBridgeMotor(PinMotorRPWM, PinMotorRDir);
 
     bool moving;
+
+    // Control loops
+    PID leftVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);
+    PID rightVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);
 };
