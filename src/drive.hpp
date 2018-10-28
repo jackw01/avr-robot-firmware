@@ -4,8 +4,10 @@
 
 #include <stdint.h>
 #include <Arduino.h>
+#include <FastGPIO.h>
 #include <pidcontroller.h>
 #include <pidautotuner.h>
+
 #include "hbridgemotor.hpp"
 #include "constants.hpp"
 #include "util.hpp"

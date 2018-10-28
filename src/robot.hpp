@@ -3,6 +3,7 @@
 // This code is distrubuted under the MIT License, see LICENSE for details
 
 #include <Arduino.h>
+
 #include "constants.hpp"
 #include "util.hpp"
 #include "comms.hpp"

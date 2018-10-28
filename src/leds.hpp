@@ -3,6 +3,7 @@
 // This code is distrubuted under the MIT License, see LICENSE for details
 
 #include <FastLED.h>
+
 #include "constants.hpp"
 
 // Container for LEDs

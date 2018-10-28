@@ -6,6 +6,7 @@
 
 #include <math.h>
 #include <FastLED.h>
+
 #include "util.hpp"
 
 #ifndef M_PI
@@ -17,6 +18,10 @@ const uint8_t PinMotorLPWM = 6;
 const uint8_t PinMotorLDir = 7;
 const uint8_t PinMotorRPWM = 11;
 const uint8_t PinMotorRDir = 10;
+const uint8_t PinLeftEncoderA = 2;
+const uint8_t PinLeftEncoderB = 4;
+const uint8_t PinRightEncoderA = 3;
+const uint8_t PinRightEncoderB = 5;
 const uint8_t PinLEDs = 13;
 
 // Drive control
