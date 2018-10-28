@@ -55,13 +55,13 @@ void Comms::writePacket(uint8_t dataType, float data) {
   writePacketEnd();
 }
 
-void Comms::writePacket(uint8_t dataType, int data[], size_t len) {
+void Comms::writePacket(uint8_t dataType, int data[], uint8_t len) {
   writePacketStart(dataType);
   for (uint8_t i = 0; i < len; i++) writePacketData(data[i]);
   writePacketEnd();
 }
 
-void Comms::writePacket(uint8_t dataType, float data[], size_t len) {
+void Comms::writePacket(uint8_t dataType, float data[], uint8_t len) {
   writePacketStart(dataType);
   for (uint8_t i = 0; i < len; i++) writePacketData(data[i]);
   writePacketEnd();

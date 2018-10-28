@@ -78,3 +78,4 @@ const uint8_t CommsFloatPrecision = 4;
 // Datatypes
 const unsigned char DataTypeHumanReadable = 0;    // Expected: string
 const unsigned char DataTypeGyro = 2;             // Expected: float[3]
+const unsigned char DataTypeDriveDistance = 3;    // Expected: float[2]

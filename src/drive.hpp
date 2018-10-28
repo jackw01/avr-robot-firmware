@@ -13,13 +13,23 @@
 #include "util.hpp"
 #include "comms.hpp"
 
+// Type for drive distance or velocity signal
+/*typedef struct{
+  float left;
+  float right;
+} DriveSignal;*/
+typedef struct{
+  union {
+    float v[2];
+    struct {
+      float left;
+      float right;
+    };
+  };
+} DriveSignal;
+
 // A differential drivebase with one motor driving each side's wheels
 class Drive {
-  typedef struct DriveSignal {
-    float left;
-    float right;
-  } DriveSignal;
-
   public:
     Drive();
 

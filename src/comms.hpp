@@ -16,8 +16,8 @@ class Comms {
     static void writePacket(uint8_t dataType, const char* data);
     static void writePacket(uint8_t dataType, int data);
     static void writePacket(uint8_t dataType, float data);
-    static void writePacket(uint8_t dataType, int data[], size_t len);
-    static void writePacket(uint8_t dataType, float data[], size_t len);
+    static void writePacket(uint8_t dataType, int data[], uint8_t len);
+    static void writePacket(uint8_t dataType, float data[], uint8_t len);
     static void leftPad(int n, char* buffer, int size, char padChar);
     static int getAvailable();
     static uint8_t getNextByte();
