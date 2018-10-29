@@ -28,6 +28,15 @@ typedef struct {
   };
 } DriveSignal;
 
+typedef struct DriveControlLoopData {
+  float leftSetpoint;
+  float rightSetpoint;
+  float leftVelocity;
+  float rightVelocity;
+  float leftMotorOutput;
+  float rightMotorOutput;
+} DriveControlLoopData;
+
 typedef enum {
   DriveStateOpenLoop,
   DriveStateClosedLoop

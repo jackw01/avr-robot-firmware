@@ -92,32 +92,38 @@ void Drive::closedLoopBegin() {
 
 // Run a cycle in closed loop mode1
 void Drive::closedLoopUpdate() {
-    DriveSignal vel = getVelocity(); // Calculate velocity
+  DriveSignal vel = getVelocity(); // Calculate velocity
 
-    float outputL = leftVelocityPID.calculate(vel.left);
-    float outputR = rightVelocityPID.calculate(vel.right);
+  float outputL = leftVelocityPID.calculate(vel.left);
+  float outputR = rightVelocityPID.calculate(vel.right);
 
-    // Calculate final speeds - deadband may be required to prevent stalling
-    // Zero speeds if setpoint is zero
-    float newOutputL, newOutputR;
+  // Calculate final speeds - deadband may be required to prevent stalling
+  // Zero speeds if setpoint is zero
+  float newOutputL, newOutputR;
 
-    if (leftVelocityPID.getSetpoint() == 0) newOutputL = 0;
-    else {
-      if (outputL < 0) newOutputL = constrain(outputL, min(-1, -SpeedDeadband), max(-1, -SpeedDeadband));
-      else if (outputL > 0) newOutputL = constrain(outputL, min(SpeedDeadband, 1), max(SpeedDeadband, 1));
-    }
+  if (leftVelocityPID.getSetpoint() == 0) newOutputL = 0;
+  else {
+    if (outputL < 0) newOutputL = constrain(outputL, min(-1, -SpeedDeadband), max(-1, -SpeedDeadband));
+    else if (outputL > 0) newOutputL = constrain(outputL, min(SpeedDeadband, 1), max(SpeedDeadband, 1));
+  }
 
-    if (rightVelocityPID.getSetpoint() == 0) newOutputR = 0;
-    else {
-      if (outputR < 0) newOutputR = constrain(outputR, min(-1, -SpeedDeadband), max(-1, -SpeedDeadband));
-      else if (outputR > 0) newOutputR = constrain(outputR, min(SpeedDeadband, 1), max(SpeedDeadband, 1));
-    }
+  if (rightVelocityPID.getSetpoint() == 0) newOutputR = 0;
+  else {
+    if (outputR < 0) newOutputR = constrain(outputR, min(-1, -SpeedDeadband), max(-1, -SpeedDeadband));
+    else if (outputR > 0) newOutputR = constrain(outputR, min(SpeedDeadband, 1), max(SpeedDeadband, 1));
+  }
 
-    leftMotor.setSpeed(newOutputL);
-    rightMotor.setSpeed(newOutputR);
+  leftMotor.setSpeed(newOutputL);
+  rightMotor.setSpeed(newOutputR);
 
-    //DriveSignal v2 = {vel.left * 1.0, vel.right * 1.0};
-    Comms::writePacket(DataTypeDriveDistance, (float*)&vel, 2);
+  // Send odometry data
+  Comms::writePacket(DataTypeDriveDistance, (float*)&getDistance(), 2);
+
+  // Send loop telemetry
+  DriveControlLoopData data = {
+    leftVelocityPID.getSetpoint(), rightVelocityPID.getSetpoint(), vel.left, vel.right, newOutputL, newOutputR
+  };
+  Comms::writePacket(DataTypeDriveControlData, (float*)&data, 6);
 }
 
 // End closed loop mode

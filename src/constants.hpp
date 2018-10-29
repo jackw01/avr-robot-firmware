@@ -27,7 +27,7 @@ const uint8_t PinLEDs = 13;
 // Drive control
 const long MainControlLoopIntervalUs = 50000; // Was 25000
 const float MainControlLoopIntervalS = (float)MainControlLoopIntervalUs / 1000000.0;
-const float DriveP = 0.0004;
+const float DriveP = 0.0006;
 const float DriveI = 0.0008;
 const float DriveD = 0.0;
 
@@ -56,7 +56,7 @@ const vec3 GyroGain = {1.0, 1.0180888, 1.0};
 // Misc features
 // LEDs
 const uint8_t LEDCount = 4;
-const uint8_t LEDMasterBrightness = 32;
+const uint8_t LEDMasterBrightness = 3;
 const CRGB ColorRed = CRGB(255, 0, 0);
 const CRGB ColorOrange = CRGB(255, 60, 0);
 const CRGB ColorYellow = CRGB(255, 237, 0);
@@ -79,3 +79,4 @@ const uint8_t CommsFloatPrecision = 4;
 const unsigned char DataTypeHumanReadable = 0;    // Expected: string
 const unsigned char DataTypeGyro = 2;             // Expected: float[3]
 const unsigned char DataTypeDriveDistance = 3;    // Expected: float[2]
+const unsigned char DataTypeDriveControlData = 3;    // Expected: float[6]
