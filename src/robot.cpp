@@ -23,6 +23,10 @@ void Robot::init() {
   // Done
   leds.setAll(ColorGreen);
   Comms::writePacket(DataTypeHumanReadable, "Initialization complete");
+
+  drive.closedLoopBegin();
+  drive.setState(DriveStateClosedLoop);
+  drive.setVelocitySetpoint({50.0, 50.0});
 }
 
 // Update function, called in a loop

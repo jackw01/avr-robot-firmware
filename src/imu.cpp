@@ -22,7 +22,7 @@ void IMU::init() {
 
 // Calibrate gyro
 void IMU::calibrateGyro() {
-  uint16_t samples = 500;  // Take a bunch of samples and average readings out
+  uint16_t samples = 5;  // Take a bunch of samples and average readings out
   for (uint16_t i = 0; i < samples; i++) {
     sensors_event_t event;
     gyro.getEvent(&event);

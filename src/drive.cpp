@@ -49,6 +49,11 @@ void Drive::resetDistanceCounter() {
   prevRightTicks = 0;
 }
 
+// Set state
+void Drive::setState(DriveState state) {
+  currentState = state;
+}
+
 // Set power of motors in open loop mode
 void Drive::setOpenLoopPower(float leftPower, float rightPower) {
   moving = !(leftPower == 0 && rightPower == 0);
@@ -58,6 +63,8 @@ void Drive::setOpenLoopPower(float leftPower, float rightPower) {
 
 // Set velocities of motors in closed loop mode
 void Drive::setVelocitySetpoint(DriveSignal velocity) {
+  leftVelocityPID.setSetpoint(velocity.left);// / LeftWheelCircumference * GearRatio * EncoderCPR / 1000000.0);
+  rightVelocityPID.setSetpoint(velocity.right);// / RightWheelCircumference * GearRatio * EncoderCPR / 1000000.0);
 }
 
 // Set PID
@@ -68,10 +75,9 @@ void Drive::setPID(float p, float i, float d) {
 
 // Update drivebase
 void Drive::update() {
-  DriveSignal vel = getDistance();
-
-  DriveSignal v2 = {vel.left * 1.0, vel.right * 1.0};
-  Comms::writePacket(DataTypeDriveDistance, (float*)&v2, 2);
+  if (currentState == DriveStateClosedLoop) {
+    closedLoopUpdate();
+  }
 }
 
 // Start closed loop mode
@@ -79,34 +85,39 @@ void Drive::closedLoopBegin() {
   moving = true;
   resetDistanceCounter();
   sei(); // Make sure encoder interrupts on
-  microseconds = micros();
+  prevMicros = micros();
   leftVelocityPID.reset();
   rightVelocityPID.reset();
 }
 
 // Run a cycle in closed loop mode1
 void Drive::closedLoopUpdate() {
-    // Calculate time delta
-    long prevMicroseconds = microseconds;
-    microseconds = micros();
-    float deltaT = microseconds - prevMicroseconds;
-
     DriveSignal vel = getVelocity(); // Calculate velocity
 
-    float outputL = leftVelocityPID.calculate(vel.leftVelocity);
-    float outputR = rightVelocityPID.calculate(vel.rightVelocity);
+    float outputL = leftVelocityPID.calculate(vel.left);
+    float outputR = rightVelocityPID.calculate(vel.right);
 
-    // Calculate final speeds - minimum speed is required to prevent stalling
-    float newLeftSpeed, newRightSpeed;
-
-    if (outputL < 0) newLeftSpeed = constrain(outputL, min(-1, -leftMinMoveSpeed), max(-1, -leftMinMoveSpeed));
-    else if (outputL > 0) newLeftSpeed = constrain(outputL, min(leftMinMoveSpeed, 1), max(leftMinMoveSpeed, 1));
-    if (outputR < 0) newRightSpeed = constrain(outputR, min(-1, -rightMinMoveSpeed), max(-1, -rightMinMoveSpeed));
-    else if (outputR > 0) newRightSpeed = constrain(outputR, min(rightMinMoveSpeed, 1), max(rightMinMoveSpeed, 1));
-
+    // Calculate final speeds - deadband may be required to prevent stalling
     // Zero speeds if setpoint is zero
-    if (leftVelocityPID.getSetpoint() == 0) newLeftSpeed = 0;
-    if (rightVelocityPID.getSetpoint() == 0) newRightSpeed = 0;
+    float newOutputL, newOutputR;
+
+    if (leftVelocityPID.getSetpoint() == 0) newOutputL = 0;
+    else {
+      if (outputL < 0) newOutputL = constrain(outputL, min(-1, -SpeedDeadband), max(-1, -SpeedDeadband));
+      else if (outputL > 0) newOutputL = constrain(outputL, min(SpeedDeadband, 1), max(SpeedDeadband, 1));
+    }
+
+    if (rightVelocityPID.getSetpoint() == 0) newOutputR = 0;
+    else {
+      if (outputR < 0) newOutputR = constrain(outputR, min(-1, -SpeedDeadband), max(-1, -SpeedDeadband));
+      else if (outputR > 0) newOutputR = constrain(outputR, min(SpeedDeadband, 1), max(SpeedDeadband, 1));
+    }
+
+    leftMotor.setSpeed(newOutputL);
+    rightMotor.setSpeed(newOutputR);
+
+    //DriveSignal v2 = {vel.left * 1.0, vel.right * 1.0};
+    Comms::writePacket(DataTypeDriveDistance, (float*)&vel, 2);
 }
 
 // End closed loop mode
@@ -132,8 +143,8 @@ DriveSignal Drive::getVelocity() {
   long currentMicros = micros();
   long deltaT = currentMicros - prevMicros;
   DriveSignal ret = {
-    ((float)leftTicks - (float)prevLeftTicks) / EncoderCPR / GearRatio * LeftWheelCircumference / deltaT,
-    ((float)rightTicks - (float)prevRightTicks) / EncoderCPR / GearRatio * RightWheelCircumference / deltaT
+    ((float)leftTicks - (float)prevLeftTicks) / EncoderCPR / GearRatio * LeftWheelCircumference / deltaT * 1000000.0,
+    ((float)rightTicks - (float)prevRightTicks) / EncoderCPR / GearRatio * RightWheelCircumference / deltaT * 1000000.0
   };
   prevLeftTicks = leftTicks;
   prevRightTicks = rightTicks;

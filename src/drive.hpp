@@ -18,7 +18,7 @@
   float left;
   float right;
 } DriveSignal;*/
-typedef struct{
+typedef struct {
   union {
     float v[2];
     struct {
@@ -28,6 +28,11 @@ typedef struct{
   };
 } DriveSignal;
 
+typedef enum {
+  DriveStateOpenLoop,
+  DriveStateClosedLoop
+} DriveState;
+
 // A differential drivebase with one motor driving each side's wheels
 class Drive {
   public:
@@ -36,6 +41,7 @@ class Drive {
     void init();
     void resetDistanceCounter();
 
+    void setState(DriveState state);
     void setOpenLoopPower(float leftPower, float rightPower);
     void setVelocitySetpoint(DriveSignal velocity);
 
@@ -64,15 +70,12 @@ class Drive {
     float encoderTicksToDistance(long ticks);
     long distanceToEncoderTicks(float distance);
 
-    // Loop
-    long microseconds = 0;
+    // State
     long prevMicros = 0;
-
     bool moving = false;
+    DriveState currentState = DriveStateOpenLoop;
 
     // Control loops
     PID leftVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);
     PID rightVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);
-
-    float initialLeftVelocitySetpoint, initialRightVelocitySetpoint;
 };

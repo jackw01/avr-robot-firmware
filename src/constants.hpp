@@ -25,10 +25,10 @@ const uint8_t PinRightEncoderB = 5;
 const uint8_t PinLEDs = 13;
 
 // Drive control
-const long MainControlLoopIntervalUs = 25000;
+const long MainControlLoopIntervalUs = 50000; // Was 25000
 const float MainControlLoopIntervalS = (float)MainControlLoopIntervalUs / 1000000.0;
-const float DriveP = 200.0;
-const float DriveI = 400.0;
+const float DriveP = 0.0004;
+const float DriveI = 0.0008;
 const float DriveD = 0.0;
 
 // Drive hardware constants
