@@ -43,6 +43,9 @@ class Drive {
     void setPID(float p, float i, float d);
 
     void update();
+    void closedLoopBegin();
+    void closedLoopUpdate();
+    void closedLoopEnd();
 
     bool getMoving();
     DriveSignal getDistance();
@@ -65,7 +68,7 @@ class Drive {
     long microseconds = 0;
     long prevMicros = 0;
 
-    bool moving;
+    bool moving = false;
 
     // Control loops
     PID leftVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);

@@ -35,12 +35,10 @@ void Drive::init() {
   FastGPIO::Pin<PinRightEncoderB>::setInput();
 
   // Attach ISRs to encoder A pins
-  cli();
+  cli(); // Disable interrupts before attaching and then enable
   attachInterrupt(digitalPinToInterrupt(PinLeftEncoderA), leftEncoderISR, RISING);
   attachInterrupt(digitalPinToInterrupt(PinRightEncoderA), rightEncoderISR, RISING);
   sei();
-
-  moving = false;
 }
 
 // Resets tick counts for both encoders
@@ -74,6 +72,48 @@ void Drive::update() {
 
   DriveSignal v2 = {vel.left * 1.0, vel.right * 1.0};
   Comms::writePacket(DataTypeDriveDistance, (float*)&v2, 2);
+}
+
+// Start closed loop mode
+void Drive::closedLoopBegin() {
+  moving = true;
+  resetDistanceCounter();
+  sei(); // Make sure encoder interrupts on
+  microseconds = micros();
+  leftVelocityPID.reset();
+  rightVelocityPID.reset();
+}
+
+// Run a cycle in closed loop mode1
+void Drive::closedLoopUpdate() {
+    // Calculate time delta
+    long prevMicroseconds = microseconds;
+    microseconds = micros();
+    float deltaT = microseconds - prevMicroseconds;
+
+    DriveSignal vel = getVelocity(); // Calculate velocity
+
+    float outputL = leftVelocityPID.calculate(vel.leftVelocity);
+    float outputR = rightVelocityPID.calculate(vel.rightVelocity);
+
+    // Calculate final speeds - minimum speed is required to prevent stalling
+    float newLeftSpeed, newRightSpeed;
+
+    if (outputL < 0) newLeftSpeed = constrain(outputL, min(-1, -leftMinMoveSpeed), max(-1, -leftMinMoveSpeed));
+    else if (outputL > 0) newLeftSpeed = constrain(outputL, min(leftMinMoveSpeed, 1), max(leftMinMoveSpeed, 1));
+    if (outputR < 0) newRightSpeed = constrain(outputR, min(-1, -rightMinMoveSpeed), max(-1, -rightMinMoveSpeed));
+    else if (outputR > 0) newRightSpeed = constrain(outputR, min(rightMinMoveSpeed, 1), max(rightMinMoveSpeed, 1));
+
+    // Zero speeds if setpoint is zero
+    if (leftVelocityPID.getSetpoint() == 0) newLeftSpeed = 0;
+    if (rightVelocityPID.getSetpoint() == 0) newRightSpeed = 0;
+}
+
+// End closed loop mode
+void Drive::closedLoopEnd() {
+  leftMotor.setSpeed(0);
+  rightMotor.setSpeed(0);
+  moving = false;
 }
 
 // Get whether robot is moving
