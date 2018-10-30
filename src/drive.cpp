@@ -52,6 +52,20 @@ void Drive::resetDistanceCounter() {
 // Set state
 void Drive::setState(DriveState state) {
   currentState = state;
+
+  // Reset things when entering/exiting closed loop mode
+  if (state == DriveStateClosedLoop) {
+    moving = true;
+    resetDistanceCounter();
+    sei(); // Make sure encoder interrupts on
+    prevMicros = micros();
+    leftVelocityPID.reset();
+    rightVelocityPID.reset();
+  } else if (state == DriveStateOpenLoop) {
+    leftMotor.setSpeed(0);
+    rightMotor.setSpeed(0);
+    moving = false;
+  }
 }
 
 // Set power of motors in open loop mode
@@ -78,16 +92,6 @@ void Drive::update() {
   if (currentState == DriveStateClosedLoop) {
     closedLoopUpdate();
   }
-}
-
-// Start closed loop mode
-void Drive::closedLoopBegin() {
-  moving = true;
-  resetDistanceCounter();
-  sei(); // Make sure encoder interrupts on
-  prevMicros = micros();
-  leftVelocityPID.reset();
-  rightVelocityPID.reset();
 }
 
 // Run a cycle in closed loop mode1
@@ -126,13 +130,6 @@ void Drive::closedLoopUpdate() {
   Comms::writePacket(DataTypeDriveControlData, (float*)&data, 6);
 }
 
-// End closed loop mode
-void Drive::closedLoopEnd() {
-  leftMotor.setSpeed(0);
-  rightMotor.setSpeed(0);
-  moving = false;
-}
-
 // Get whether robot is moving
 bool Drive::getMoving() {
   return moving;
@@ -156,14 +153,4 @@ DriveSignal Drive::getVelocity() {
   prevRightTicks = rightTicks;
   prevMicros = currentMicros;
   return ret;
-}
-
-// Convert between encoder ticks and distance
-float Drive::encoderTicksToDistance(long ticks) {
-  return (float)ticks / EncoderCPR / GearRatio * WheelCircumference;
-}
-
-// Convert between encoder ticks and distance
-long Drive::distanceToEncoderTicks(float distance) {
-  return (long)(distance / WheelCircumference * GearRatio * EncoderCPR);
 }

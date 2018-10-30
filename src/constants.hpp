@@ -76,7 +76,11 @@ const uint8_t CommsNumberWidth = 8;
 const uint8_t CommsFloatPrecision = 4;
 
 // Datatypes
-const unsigned char DataTypeHumanReadable = 0;    // Expected: string
-const unsigned char DataTypeGyro = 2;             // Expected: float[3]
-const unsigned char DataTypeDriveDistance = 3;    // Expected: float[2]
-const unsigned char DataTypeDriveControlData = 3;    // Expected: float[6]
+const unsigned char DataTypeHumanReadable = 0;         // Expected: string
+const unsigned char DataTypeGyro = 2;                  // Expected: float[3]
+const unsigned char DataTypeDriveDistance = 3;         // Expected: float[2]
+const unsigned char DataTypeDriveControlData = 3;      // Expected: float[6]
+
+const unsigned char CmdTypeSetDriveClosedLoop = 0;     // Expected: float[2]
+const unsigned char CmdTypeEnableDriveClosedLoop = 1;  // Expected: none
+const unsigned char CmdTypeDisableDriveClosedLoop = 2; // Expected: none

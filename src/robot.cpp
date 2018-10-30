@@ -24,7 +24,6 @@ void Robot::init() {
   leds.setAll(ColorGreen);
   Comms::writePacket(DataTypeHumanReadable, "Initialization complete");
 
-  drive.closedLoopBegin();
   drive.setState(DriveStateClosedLoop);
   drive.setVelocitySetpoint({50.0, 50.0});
 }
@@ -34,7 +33,13 @@ void Robot::tick() {
   // Check for available data and parse packets
   while (Comms::getAvailable() > 0) {
     if (parseIncomingPackets(Comms::getNextByte())) { // While data is available, process next byte
-      Comms::writePacket(packetType, packetContents, 4);
+      if (packetType == CmdTypeSetDriveClosedLoop) {
+        drive.setVelocitySetpoint({packetContents[0], packetContents[1]});
+      } else if (packetType == CmdTypeEnableDriveClosedLoop) {
+        drive.setState(DriveStateClosedLoop);
+      } else if (packetType == CmdTypeDisableDriveClosedLoop) {
+        drive.setState(DriveStateOpenLoop);
+      }
     }
   }
 

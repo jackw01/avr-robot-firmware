@@ -54,13 +54,9 @@ class Drive {
     void setOpenLoopPower(float leftPower, float rightPower);
     void setVelocitySetpoint(DriveSignal velocity);
 
-    // PID
     void setPID(float p, float i, float d);
 
     void update();
-    void closedLoopBegin();
-    void closedLoopUpdate();
-    void closedLoopEnd();
 
     bool getMoving();
     DriveSignal getDistance();
@@ -75,10 +71,6 @@ class Drive {
     long prevLeftTicks = 0;
     long prevRightTicks = 0;
 
-    // Convert between encoder ticks and distance
-    float encoderTicksToDistance(long ticks);
-    long distanceToEncoderTicks(float distance);
-
     // State
     long prevMicros = 0;
     bool moving = false;
@@ -87,4 +79,7 @@ class Drive {
     // Control loops
     PID leftVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);
     PID rightVelocityPID = PID(DriveP, DriveI, DriveD, -1.0, 1.0);
+
+    // Internal update methods
+    void closedLoopUpdate();
 };
