@@ -34,4 +34,8 @@ class Robot {
     uint8_t packetIndex = 0;
     uint8_t packetType = 0;
     float packetContents[4];
+
+    // System things
+    long lastStatusCheckMicroseconds = 0;
+    float measureBatteryVoltage();
 };

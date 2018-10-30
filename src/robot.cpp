@@ -58,6 +58,21 @@ void Robot::tick() {
     // Send general data
     //Comms::writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
   }
+
+  // Send status/battery voltage over serial
+  if (microseconds - lastStatusCheckMicroseconds > SystemStatusCheckIntervalUs) {
+    lastStatusCheckMicroseconds = microseconds;
+    
+    Comms::writePacket(DataTypeFreeRAM, getFreeRAM()); // Send RAM first
+
+    float voltage = measureBatteryVoltage();
+    Comms::writePacket(DataTypeBatteryVoltage, voltage); // Send battery
+    if (voltage < BatteryLowCellVoltage * BatteryCellCount && !drive.getMoving()) { // Low battery warning
+      Comms::writePacket(DataTypeHumanReadable, "Battery critically low. Shutting down.");
+      cli();
+      leds.blinkAll(ColorRed, ColorOff, 0, 500, 500);
+    }
+  }
 }
 
 // Parse packets in incoming data. Returns true if a packet is found.
@@ -106,4 +121,15 @@ bool Robot::parseIncomingPackets(uint8_t nextByte) {
     return true;
   }
   return false;
+}
+
+// Measures the battery voltage
+float Robot::measureBatteryVoltage() {
+  // Take multiple samples and average them to make the results more accurate
+  float temp = 0.0;
+  uint8_t samples = 10;
+  for (uint8_t i = 0; i < samples; i++) {
+    temp += (float)analogRead(PinBatteryVoltageDivider) / 1023.0 * ControllerSupplyVoltage * BatteryDividerRatio;
+  }
+  return temp / (float)samples;
 }

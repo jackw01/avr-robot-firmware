@@ -23,6 +23,7 @@ const uint8_t PinLeftEncoderB = 4;
 const uint8_t PinRightEncoderA = 3;
 const uint8_t PinRightEncoderB = 5;
 const uint8_t PinLEDs = 13;
+const uint8_t PinBatteryVoltageDivider = 3;
 
 // Drive control
 const long MainControlLoopIntervalUs = 50000; // Was 25000
@@ -67,6 +68,12 @@ const CRGB ColorMagenta = CRGB(190, 0, 255);
 const CRGB ColorWhite = CRGB(255, 255, 255);
 const CRGB ColorOff = CRGB(0, 0, 0);
 
+// Battery
+const float BatteryLowCellVoltage = 0.9;
+const float BatteryCellCount = 5;
+const float BatteryDividerRatio = 2.0;
+const float ControllerSupplyVoltage = 5.0;
+
 // Communication
 // Serial settings
 const long SerialBaudRate = 115200;
@@ -74,12 +81,15 @@ const uint8_t PacketMarkerByte = '\\';
 const uint8_t PacketSeparatorByte = ' ';
 const uint8_t CommsNumberWidth = 8;
 const uint8_t CommsFloatPrecision = 4;
+const long SystemStatusCheckIntervalUs = 1000000;
 
 // Datatypes
 const unsigned char DataTypeHumanReadable = 0;         // Expected: string
+const unsigned char DataTypeBatteryVoltage = 1;        // Expected: float
 const unsigned char DataTypeGyro = 2;                  // Expected: float[3]
 const unsigned char DataTypeDriveDistance = 3;         // Expected: float[2]
-const unsigned char DataTypeDriveControlData = 3;      // Expected: float[6]
+const unsigned char DataTypeDriveControlData = 4;      // Expected: float[6]
+const unsigned char DataTypeFreeRAM = 5;               // Expected: int
 
 const unsigned char CmdTypeSetDriveClosedLoop = 0;     // Expected: float[2]
 const unsigned char CmdTypeEnableDriveClosedLoop = 1;  // Expected: none

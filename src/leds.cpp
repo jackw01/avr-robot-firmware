@@ -18,3 +18,14 @@ void LEDs::setAll(CRGB color) {
   for (int i = 0; i < LEDCount; i++) leds[i] = color;
   FastLED.show();
 }
+
+void LEDs::blinkAll(CRGB color1, CRGB color2, uint16_t count, uint16_t time1, uint16_t time2) {
+  uint16_t counter = 0;
+  while (counter < count) { // Blink forever if count == 0
+    setAll(color1);
+    delay(time1);
+    setAll(color2);
+    delay(time2);
+    if (count > 0) counter++;
+  }
+}
