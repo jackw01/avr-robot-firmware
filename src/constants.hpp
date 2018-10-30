@@ -28,7 +28,7 @@ const uint8_t PinBatteryVoltageDivider = 3;
 // Drive control
 const long MainControlLoopIntervalUs = 50000; // Was 25000
 const float MainControlLoopIntervalS = (float)MainControlLoopIntervalUs / 1000000.0;
-const float DriveP = 0.0006;
+const float DriveP = 0.001;
 const float DriveI = 0.0008;
 const float DriveD = 0.0;
 
@@ -94,3 +94,5 @@ const unsigned char DataTypeFreeRAM = 5;               // Expected: int
 const unsigned char CmdTypeSetDriveClosedLoop = 0;     // Expected: float[2]
 const unsigned char CmdTypeEnableDriveClosedLoop = 1;  // Expected: none
 const unsigned char CmdTypeDisableDriveClosedLoop = 2; // Expected: none
+const unsigned char CmdTypeSetDrivePIDTuning = 3;      // Expected: float[3]
+const unsigned char CmdTypeSetAllStatusLEDs = 4;       // Expected: int[3]

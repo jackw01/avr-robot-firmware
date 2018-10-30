@@ -17,10 +17,9 @@ void Robot::init() {
   // Init subsystems
   imu.init();
   drive.init();
-
   imu.calibrateGyro();
 
-  // Done
+  // Initialization complete
   leds.setAll(ColorGreen);
   Comms::writePacket(DataTypeHumanReadable, "Initialization complete");
 
@@ -39,6 +38,10 @@ void Robot::tick() {
         drive.setState(DriveStateClosedLoop);
       } else if (packetType == CmdTypeDisableDriveClosedLoop) {
         drive.setState(DriveStateOpenLoop);
+      } else if (packetType == CmdTypeSetDrivePIDTuning) {
+        drive.setPID(packetContents[0], packetContents[1], packetContents[2]);
+      } else if (packetType == CmdTypeSetAllStatusLEDs) {
+          leds.setAll(CRGB(packetContents[0], packetContents[1], packetContents[2]));
       }
     }
   }
@@ -62,7 +65,7 @@ void Robot::tick() {
   // Send status/battery voltage over serial
   if (microseconds - lastStatusCheckMicroseconds > SystemStatusCheckIntervalUs) {
     lastStatusCheckMicroseconds = microseconds;
-    
+
     Comms::writePacket(DataTypeFreeRAM, getFreeRAM()); // Send RAM first
 
     float voltage = measureBatteryVoltage();
@@ -86,6 +89,7 @@ bool Robot::parseIncomingPackets(uint8_t nextByte) {
       packetType += pow10(3 - packetIndex) * (nextByte - 48);
       packetIndex++;
     } else { // If not, reject packet
+      Comms::writePacket(DataTypeHumanReadable, "Malformed packet received. Ignoring.");
       packetIndex = 0;
       packetType = 0;
     }
@@ -93,6 +97,7 @@ bool Robot::parseIncomingPackets(uint8_t nextByte) {
     if (nextByte == PacketSeparatorByte) { // Is expected character?
       packetIndex ++;
     } else { // If not, reject packet
+      Comms::writePacket(DataTypeHumanReadable, "Malformed packet received. Ignoring.");
       packetIndex = 0;
       packetType = 0;
     }
