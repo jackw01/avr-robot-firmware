@@ -20,9 +20,11 @@ void IMU::init() {
   delay(200); // Wait first - gyro returns bad data if queried immediately after initialization
 }
 
-// Calibrate gyro
-void IMU::calibrateGyro() {
-  uint16_t samples = 5;  // Take a bunch of samples and average readings out
+// Calibrate gyro - Take a bunch of samples and average readings out
+void IMU::calibrateGyro(uint16_t samples) {
+  gyroOffset.x = 0;
+  gyroOffset.y = 0;
+  gyroOffset.z = 0;
   for (uint16_t i = 0; i < samples; i++) {
     sensors_event_t event;
     gyro.getEvent(&event);

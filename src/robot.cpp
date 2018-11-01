@@ -41,6 +41,8 @@ void Robot::tick() {
         drive.setPID(packetContents[0], packetContents[1], packetContents[2]);
       } else if (packetType == CmdTypeSetAllStatusLEDs) {
         leds.setAll(CRGB(packetContents[0], packetContents[1], packetContents[2]));
+      } else if (packetType == CmdTypeCalibrateGyro) {
+        imu.calibrateGyro(packetContents[0]);
       }
     }
   }

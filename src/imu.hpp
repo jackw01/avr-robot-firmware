@@ -19,7 +19,7 @@ class IMU {
     IMU();
 
     void init();
-    void calibrateGyro();
+    void calibrateGyro(uint16_t samples = 500);
 
     void update();
     vec3 getGyroOrientation();

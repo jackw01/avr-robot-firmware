@@ -92,9 +92,10 @@ const unsigned char DataTypeDriveDistance = 3;         // Expected: float[2]
 const unsigned char DataTypeDriveControlData = 4;      // Expected: float[6]
 const unsigned char DataTypeFreeRAM = 5;               // Expected: int
 
-const unsigned char CmdTypeSetDriveOpenLoop = 0;     // Expected: float[2]
+const unsigned char CmdTypeSetDriveOpenLoop = 0;       // Expected: float[2]
 const unsigned char CmdTypeSetDriveClosedLoop = 1;     // Expected: float[2]
 const unsigned char CmdTypeEnableDriveClosedLoop = 2;  // Expected: none
 const unsigned char CmdTypeDisableDriveClosedLoop = 3; // Expected: none
 const unsigned char CmdTypeSetDrivePIDTuning = 4;      // Expected: float[3]
 const unsigned char CmdTypeSetAllStatusLEDs = 5;       // Expected: int[3]
+const unsigned char CmdTypeCalibrateGyro = 6;          // Expected: int
