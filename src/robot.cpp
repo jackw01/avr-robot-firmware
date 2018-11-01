@@ -20,11 +20,8 @@ void Robot::init() {
   imu.calibrateGyro();
 
   // Initialization complete
-  leds.setAll(ColorGreen);
+  leds.setAll(ColorCyan);
   Comms::writePacket(DataTypeHumanReadable, "Initialization complete");
-
-  drive.setState(DriveStateClosedLoop);
-  drive.setVelocitySetpoint({50.0, 50.0});
 }
 
 // Update function, called in a loop
@@ -32,7 +29,9 @@ void Robot::tick() {
   // Check for available data and parse packets
   while (Comms::getAvailable() > 0) {
     if (parseIncomingPackets(Comms::getNextByte())) { // While data is available, process next byte
-      if (packetType == CmdTypeSetDriveClosedLoop) {
+      if (packetType == CmdTypeSetDriveOpenLoop) {
+        drive.setOpenLoopPower(packetContents[0], packetContents[1]);
+      } else if (packetType == CmdTypeSetDriveClosedLoop) {
         drive.setVelocitySetpoint({packetContents[0], packetContents[1]});
       } else if (packetType == CmdTypeEnableDriveClosedLoop) {
         drive.setState(DriveStateClosedLoop);
@@ -41,7 +40,7 @@ void Robot::tick() {
       } else if (packetType == CmdTypeSetDrivePIDTuning) {
         drive.setPID(packetContents[0], packetContents[1], packetContents[2]);
       } else if (packetType == CmdTypeSetAllStatusLEDs) {
-          leds.setAll(CRGB(packetContents[0], packetContents[1], packetContents[2]));
+        leds.setAll(CRGB(packetContents[0], packetContents[1], packetContents[2]));
       }
     }
   }
@@ -54,12 +53,11 @@ void Robot::tick() {
 
     // Update subsystems
     imu.update();
-    vec3 gyroOrientation = imu.getGyroOrientation();
-
     drive.update();
 
-    // Send general data
-    //Comms::writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
+    // Send gyro data
+    vec3 gyroOrientation = imu.getGyroOrientation();
+    Comms::writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
   }
 
   // Send status/battery voltage over serial

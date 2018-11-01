@@ -14,10 +14,6 @@
 #include "comms.hpp"
 
 // Type for drive distance or velocity signal
-/*typedef struct{
-  float left;
-  float right;
-} DriveSignal;*/
 typedef struct {
   union {
     float v[2];

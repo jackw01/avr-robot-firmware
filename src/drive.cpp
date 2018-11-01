@@ -96,21 +96,18 @@ void Drive::update() {
 
 // Run a cycle in closed loop mode1
 void Drive::closedLoopUpdate() {
-  DriveSignal vel = getVelocity(); // Calculate velocity
-
+  DriveSignal vel = getVelocity(); // Calculate velocity and run PID
   float outputL = leftVelocityPID.calculate(vel.left);
   float outputR = rightVelocityPID.calculate(vel.right);
 
   // Calculate final speeds - deadband may be required to prevent stalling
   // Zero speeds if setpoint is zero
   float newOutputL, newOutputR;
-
   if (leftVelocityPID.getSetpoint() == 0) newOutputL = 0;
   else {
     if (outputL < 0) newOutputL = constrain(outputL, min(-1, -SpeedDeadband), max(-1, -SpeedDeadband));
     else if (outputL > 0) newOutputL = constrain(outputL, min(SpeedDeadband, 1), max(SpeedDeadband, 1));
   }
-
   if (rightVelocityPID.getSetpoint() == 0) newOutputR = 0;
   else {
     if (outputR < 0) newOutputR = constrain(outputR, min(-1, -SpeedDeadband), max(-1, -SpeedDeadband));
