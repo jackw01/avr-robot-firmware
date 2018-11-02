@@ -13,7 +13,7 @@
 #include "util.hpp"
 #include "comms.hpp"
 
-// Type for drive distance or velocity signal
+// Types for drive distance and velocity signals
 typedef struct {
   union {
     float v[2];
@@ -24,6 +24,17 @@ typedef struct {
   };
 } DriveSignal;
 
+typedef struct {
+  union {
+    float v[3];
+    struct {
+      float left;
+      float right;
+      float deltaT;
+    };
+  };
+} DriveVelocity;
+
 typedef struct DriveControlLoopData {
   float leftSetpoint;
   float rightSetpoint;
@@ -31,6 +42,7 @@ typedef struct DriveControlLoopData {
   float rightVelocity;
   float leftMotorOutput;
   float rightMotorOutput;
+  float deltaT;
 } DriveControlLoopData;
 
 typedef enum {
@@ -56,7 +68,7 @@ class Drive {
 
     bool getMoving();
     DriveSignal getDistance();
-    DriveSignal getVelocity();
+    DriveVelocity getVelocity();
 
   private:
     // Motors

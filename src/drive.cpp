@@ -96,7 +96,7 @@ void Drive::update() {
 
 // Run a cycle in closed loop mode1
 void Drive::closedLoopUpdate() {
-  DriveSignal vel = getVelocity(); // Calculate velocity and run PID
+  DriveVelocity vel = getVelocity(); // Calculate velocity and run PID
   float outputL = leftVelocityPID.calculate(vel.left);
   float outputR = rightVelocityPID.calculate(vel.right);
 
@@ -122,7 +122,8 @@ void Drive::closedLoopUpdate() {
 
   // Send loop telemetry
   DriveControlLoopData data = {
-    leftVelocityPID.getSetpoint(), rightVelocityPID.getSetpoint(), vel.left, vel.right, newOutputL, newOutputR
+    leftVelocityPID.getSetpoint(), rightVelocityPID.getSetpoint(), vel.left, vel.right,
+    newOutputL, newOutputR, vel.deltaT
   };
   Comms::writePacket(DataTypeDriveControlData, (float*)&data, 6);
 }
@@ -139,12 +140,13 @@ DriveSignal Drive::getDistance() {
 }
 
 // Get velocity
-DriveSignal Drive::getVelocity() {
+DriveVelocity Drive::getVelocity() {
   long currentMicros = micros();
-  long deltaT = currentMicros - prevMicros;
-  DriveSignal ret = {
-    ((float)leftTicks - (float)prevLeftTicks) / EncoderCPR / GearRatio * LeftWheelCircumference / deltaT * 1000000.0,
-    ((float)rightTicks - (float)prevRightTicks) / EncoderCPR / GearRatio * RightWheelCircumference / deltaT * 1000000.0
+  long dT = currentMicros - prevMicros;
+  DriveVelocity ret = {
+    ((float)leftTicks - (float)prevLeftTicks) / EncoderCPR / GearRatio * LeftWheelCircumference / dT * 1000000.0,
+    ((float)rightTicks - (float)prevRightTicks) / EncoderCPR / GearRatio * RightWheelCircumference / dT * 1000000.0,
+    dT
   };
   prevLeftTicks = leftTicks;
   prevRightTicks = rightTicks;

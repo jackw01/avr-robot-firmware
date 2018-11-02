@@ -89,7 +89,7 @@ const unsigned char DataTypeHumanReadable = 0;         // Expected: string
 const unsigned char DataTypeBatteryVoltage = 1;        // Expected: float
 const unsigned char DataTypeGyro = 2;                  // Expected: float[3]
 const unsigned char DataTypeDriveDistance = 3;         // Expected: float[2]
-const unsigned char DataTypeDriveControlData = 4;      // Expected: float[6]
+const unsigned char DataTypeDriveControlData = 4;      // Expected: float[7]
 const unsigned char DataTypeFreeRAM = 5;               // Expected: int
 
 const unsigned char CmdTypeSetDriveOpenLoop = 0;       // Expected: float[2]

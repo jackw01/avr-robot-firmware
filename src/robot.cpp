@@ -132,7 +132,7 @@ bool Robot::parseIncomingPackets(uint8_t nextByte) {
 float Robot::measureBatteryVoltage() {
   // Take multiple samples and average them to make the results more accurate
   float temp = 0.0;
-  uint8_t samples = 10;
+  uint8_t samples = 5;
   for (uint8_t i = 0; i < samples; i++) {
     temp += (float)analogRead(PinBatteryVoltageDivider) / 1023.0 * ControllerSupplyVoltage * BatteryDividerRatio;
   }
