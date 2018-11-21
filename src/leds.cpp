@@ -20,7 +20,7 @@ void LEDs::setAll(CRGB color) {
 
 void LEDs::blinkAll(CRGB color1, CRGB color2, uint16_t count, uint16_t time1, uint16_t time2) {
   uint16_t counter = 0;
-  while (counter < count) { // Blink forever if count == 0
+  while (counter <= count) { // Blink forever if count == 0
     setAll(color1);
     delay(time1);
     setAll(color2);

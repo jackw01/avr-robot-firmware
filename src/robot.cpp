@@ -71,7 +71,6 @@ void Robot::tick() {
     Comms::writePacket(DataTypeBatteryVoltage, voltage); // Send battery
     if (voltage < BatteryLowCellVoltage * BatteryCellCount && !drive.getMoving()) { // Low battery warning
       Comms::writePacket(DataTypeHumanReadable, "Battery critically low. Shutting down.");
-      cli();
       leds.blinkAll(ColorRed, ColorOff, 0, 500, 500);
     }
   }

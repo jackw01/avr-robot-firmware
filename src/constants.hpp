@@ -69,7 +69,7 @@ const CRGB ColorWhite = CRGB(255, 255, 255);
 const CRGB ColorOff = CRGB(0, 0, 0);
 
 // Battery
-const float BatteryLowCellVoltage = 0.9;
+const float BatteryLowCellVoltage = 0.8;
 const float BatteryCellCount = 5;
 const float BatteryDividerRatio = 2.0;
 const float ControllerSupplyVoltage = 5.0;
