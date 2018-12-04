@@ -98,3 +98,4 @@ const unsigned char CmdTypeDisableDriveClosedLoop = 3; // Expected: none
 const unsigned char CmdTypeSetDrivePIDTuning = 4;      // Expected: float[3]
 const unsigned char CmdTypeSetAllStatusLEDs = 5;       // Expected: int[3]
 const unsigned char CmdTypeCalibrateGyro = 6;          // Expected: int
+const unsigned char CmdTypeResetDrive = 6;             // Expected: none

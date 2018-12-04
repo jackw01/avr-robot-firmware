@@ -40,6 +40,15 @@ void Drive::init() {
   sei();
 }
 
+// Reset all
+void Drive::reset() {
+  resetDistanceCounter();
+  leftVelocityPID.reset();
+  rightVelocityPID.reset();
+  leftVelocityPID.setSetpoint(0);
+  rightVelocityPID.setSetpoint(0);
+}
+
 // Resets tick counts for both encoders
 void Drive::resetDistanceCounter() {
   leftTicks = 0;

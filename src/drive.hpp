@@ -55,6 +55,7 @@ class Drive {
     Drive();
 
     void init();
+    void reset();
     void resetDistanceCounter();
 
     void setState(DriveState state);
