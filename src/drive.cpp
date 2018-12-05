@@ -60,7 +60,6 @@ void Drive::resetDistanceCounter() {
 // Set state
 void Drive::setState(DriveState state) {
   currentState = state;
-
   // Reset things when entering/exiting closed loop mode
   if (state == DriveStateClosedLoop) {
     moving = true;
@@ -97,6 +96,9 @@ void Drive::setPID(float p, float i, float d) {
 
 // Update drivebase
 void Drive::update() {
+  // Send odometry data
+  Comms::writePacket(DataTypeDriveDistance, (float*)&getDistance(), 2);
+  // Update based on state
   if (currentState == DriveStateClosedLoop) {
     closedLoopUpdate();
   }
@@ -124,9 +126,6 @@ void Drive::closedLoopUpdate() {
 
   leftMotor.setSpeed(newOutputL);
   rightMotor.setSpeed(newOutputR);
-
-  // Send odometry data
-  Comms::writePacket(DataTypeDriveDistance, (float*)&getDistance(), 2);
 
   // Send loop telemetry
   DriveControlLoopData data = {
