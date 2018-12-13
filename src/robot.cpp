@@ -41,7 +41,9 @@ void Robot::tick() {
       } else if (packetType == CmdTypeSetAllStatusLEDs) {
         leds.setAll(CRGB(packetContents[0], packetContents[1], packetContents[2]));
       } else if (packetType == CmdTypeCalibrateGyro) {
+        leds.setAll(ColorOrange);
         imu.calibrateGyro(packetContents[0]);
+        leds.setAll(ColorCyan);
       } else if (packetType == CmdTypeResetDrive) {
         drive.reset();
       }

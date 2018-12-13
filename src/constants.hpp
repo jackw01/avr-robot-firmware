@@ -55,8 +55,8 @@ const vec3 GyroGain = {1.0, 1.0180888, 1.0};
 
 // Misc features
 // LEDs
-const uint8_t LEDCount = 4;
-const uint8_t LEDMasterBrightness = 3;
+const uint8_t LEDCount = 2;
+const uint8_t LEDMasterBrightness = 10;
 const CRGB ColorRed = CRGB(255, 0, 0);
 const CRGB ColorOrange = CRGB(255, 64, 0);
 const CRGB ColorYellow = CRGB(255, 237, 0);

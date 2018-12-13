@@ -35,6 +35,12 @@ void IMU::calibrateGyro(uint16_t samples) {
   gyroOffset.x /= (float)samples;
   gyroOffset.y /= (float)samples;
   gyroOffset.z /= (float)samples;
+  lastGyro.roll = 0;
+  lastGyro.pitch = 0;
+  lastGyro.heading = 0;
+  currentGyro.roll = 0;
+  currentGyro.pitch = 0;
+  currentGyro.heading = 0;
 }
 
 // Get latest values from sensors
