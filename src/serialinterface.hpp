@@ -1,5 +1,5 @@
 // robot-bridge-firmware
-// Copyright 2018 jackw01. Released under the MIT License (see LICENSE for details).
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #pragma once
 
@@ -7,11 +7,10 @@
 #include <stdint.h>
 #include <string.h>
 #include <Arduino.h>
-#include "constants.hpp"
 
-class Comms {
+class SerialInterface {
   public:
-    static void init();
+    static void init(long baudRate);
     static void writePacket(uint8_t dataType, const char* data);
     static void writePacket(uint8_t dataType, int data);
     static void writePacket(uint8_t dataType, float data);
@@ -27,6 +26,6 @@ class Comms {
     static void writePacketData(int data);
     static void writePacketData(float data);
     static void writePacketEnd();
-    static void writeOut(uint8_t byte);
+    static void writeOut(char byte);
     static void writeOut(const char* bytes);
 };

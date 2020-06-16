@@ -1,5 +1,5 @@
 // robot-bridge-firmware
-// Copyright 2018 jackw01. Released under the MIT License (see LICENSE for details).
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #include "imu.hpp"
 
@@ -10,12 +10,12 @@ IMU::IMU() {
 void IMU::init() {
   // Set up gyro
   gyro.enableAutoRange(false);
-  if (!gyro.begin()) Comms::writePacket(0, "L3GD30 I2C gyro not detected");
-  else Comms::writePacket(0, "L3GD30 I2C gyro connected");
-  if (!accel.begin()) Comms::writePacket(0, "LSM303D I2C accel not detected");
-  else Comms::writePacket(0, "LSM303D I2C accel connected");
-  if (!mag.begin()) Comms::writePacket(0, "LSM303D I2C mag not detected");
-  else Comms::writePacket(0, "LSM303D I2C mag connected");
+  if (!gyro.begin()) SerialInterface::writePacket(0, "L3GD30 I2C gyro not detected");
+  else SerialInterface::writePacket(0, "L3GD30 I2C gyro connected");
+  if (!accel.begin()) SerialInterface::writePacket(0, "LSM303D I2C accel not detected");
+  else SerialInterface::writePacket(0, "LSM303D I2C accel connected");
+  if (!mag.begin()) SerialInterface::writePacket(0, "LSM303D I2C mag not detected");
+  else SerialInterface::writePacket(0, "LSM303D I2C mag connected");
   delay(200); // Wait first - gyro returns bad data if queried immediately after initialization
 }
 

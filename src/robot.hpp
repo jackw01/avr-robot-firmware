@@ -1,11 +1,11 @@
 // robot-bridge-firmware
-// Copyright 2018 jackw01. Released under the MIT License (see LICENSE for details).
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #include <Arduino.h>
 
 #include "constants.hpp"
 #include "util.hpp"
-#include "comms.hpp"
+#include "serialinterface.hpp"
 #include "imu.hpp"
 #include "drive.hpp"
 #include "leds.hpp"

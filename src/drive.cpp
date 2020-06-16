@@ -1,5 +1,5 @@
 // robot-bridge-firmware
-// Copyright 2018 jackw01. Released under the MIT License (see LICENSE for details).
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #include "drive.hpp"
 
@@ -97,7 +97,7 @@ void Drive::setPID(float p, float i, float d) {
 // Update drivebase
 void Drive::update() {
   // Send odometry data
-  Comms::writePacket(DataTypeDriveDistance, (float*)&getDistance(), 2);
+  SerialInterface::writePacket(DataTypeDriveDistance, (float*)&getDistance(), 2);
   // Update based on state
   if (currentState == DriveStateClosedLoop) {
     closedLoopUpdate();
@@ -132,7 +132,7 @@ void Drive::closedLoopUpdate() {
     leftVelocityPID.getSetpoint(), rightVelocityPID.getSetpoint(), vel.left, vel.right,
     newOutputL, newOutputR, vel.deltaT
   };
-  Comms::writePacket(DataTypeDriveControlData, (float*)&data, 6);
+  SerialInterface::writePacket(DataTypeDriveControlData, (float*)&data, 6);
 }
 
 // Get whether robot is moving

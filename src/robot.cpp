@@ -1,5 +1,5 @@
 // robot-bridge-firmware
-// Copyright 2018 jackw01. Released under the MIT License (see LICENSE for details).
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #include "robot.hpp"
 
@@ -11,7 +11,7 @@ void Robot::init() {
   leds.init(); // Turn on status lights before anything else
   leds.setAll(ColorOrange);
 
-  Comms::init(); // Start serial connection
+  SerialInterface::init(SerialBaudRate); // Start serial connection
 
   // Init subsystems
   imu.init();
@@ -20,14 +20,14 @@ void Robot::init() {
 
   // Initialization complete
   leds.setAll(ColorCyan);
-  Comms::writePacket(DataTypeHumanReadable, "Initialization complete");
+  SerialInterface::writePacket(DataTypeHumanReadable, "Initialization complete");
 }
 
 // Update function, called in a loop
 void Robot::tick() {
   // Check for available data and parse packets
-  while (Comms::getAvailable() > 0) {
-    if (parseIncomingPackets(Comms::getNextByte())) { // While data is available, process next byte
+  while (SerialInterface::getAvailable() > 0) {
+    if (parseIncomingPackets(SerialInterface::getNextByte())) { // While data is available, process next byte
       if (packetType == CmdTypeSetDriveOpenLoop) {
         drive.setOpenLoopPower(packetContents[0], packetContents[1]);
       } else if (packetType == CmdTypeSetDriveClosedLoop) {
@@ -62,19 +62,19 @@ void Robot::tick() {
 
     // Send gyro data
     vec3 gyroOrientation = imu.getGyroOrientation();
-    Comms::writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
+    SerialInterface::writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
   }
 
   // Send status/battery voltage over serial
   if (microseconds - lastStatusCheckMicroseconds > SystemStatusCheckIntervalUs) {
     lastStatusCheckMicroseconds = microseconds;
 
-    Comms::writePacket(DataTypeFreeRAM, getFreeRAM()); // Send RAM first
+    SerialInterface::writePacket(DataTypeFreeRAM, getFreeRAM()); // Send RAM first
 
     float voltage = measureBatteryVoltage();
-    Comms::writePacket(DataTypeBatteryVoltage, voltage); // Send battery
+    SerialInterface::writePacket(DataTypeBatteryVoltage, voltage); // Send battery
     if (voltage < BatteryLowCellVoltage * BatteryCellCount && !drive.getMoving()) { // Low battery warning
-      Comms::writePacket(DataTypeHumanReadable, "Battery critically low. Shutting down.");
+      SerialInterface::writePacket(DataTypeHumanReadable, "Battery critically low. Shutting down.");
       leds.blinkAll(ColorRed, ColorOff, 0, 500, 500);
     }
   }
@@ -82,7 +82,7 @@ void Robot::tick() {
 
 // Parse packets in incoming data. Returns true if a packet is found.
 bool Robot::parseIncomingPackets(uint8_t nextByte) {
-  if (packetIndex == 0 && nextByte == PacketMarkerByte) { // Packet start
+  if (packetIndex == 0 && nextByte == PacketStartByte) { // Packet start
     memset(incomingPacket, 0, 24);
     packetIndex++;
     packetType = 0;
@@ -91,22 +91,22 @@ bool Robot::parseIncomingPackets(uint8_t nextByte) {
       packetType += pow10(3 - packetIndex) * (nextByte - 48);
       packetIndex++;
     } else { // If not, reject packet
-      Comms::writePacket(DataTypeHumanReadable, "Malformed packet received. Ignoring.");
+      SerialInterface::writePacket(DataTypeHumanReadable, "Malformed packet received. Ignoring.");
       packetIndex = 0;
       packetType = 0;
     }
   } else if (packetIndex == 4) { // Packet separator
-    if (nextByte == PacketSeparatorByte) { // Is expected character?
+    if (nextByte == PacketDataSeparatorByte) { // Is expected character?
       packetIndex ++;
     } else { // If not, reject packet
-      Comms::writePacket(DataTypeHumanReadable, "Malformed packet received. Ignoring.");
+      SerialInterface::writePacket(DataTypeHumanReadable, "Malformed packet received. Ignoring.");
       packetIndex = 0;
       packetType = 0;
     }
-  } else if (packetIndex > 4 && nextByte != PacketMarkerByte) { // Read arguments, stop at packet marker
+  } else if (packetIndex > 4 && nextByte != PacketEndByte) { // Read arguments, stop at packet marker
     incomingPacket[packetIndex - 5] = nextByte;
     packetIndex ++;
-  } else if (packetIndex - 5 == sizeof(incomingPacket) || nextByte == PacketMarkerByte) { // Reached end of packet
+  } else if (packetIndex - 5 == sizeof(incomingPacket) || nextByte == PacketEndByte) { // Reached end of packet
     // Parse arguments
     for (uint8_t i = 0, startIndex = 0; i < sizeof(packetContents) / sizeof(float); i++) { // Go through args
       if (startIndex < packetIndex - 5) {
@@ -114,7 +114,7 @@ bool Robot::parseIncomingPackets(uint8_t nextByte) {
         memset(argString, 0, 8);
         uint8_t j;
         for (j = startIndex; j < packetIndex - 5; j++) { // Iterate through bytes until end of packet
-          if (incomingPacket[j] == PacketSeparatorByte) break; // Break if end of argument or packet detected
+          if (incomingPacket[j] == PacketArgsSeparatorByte) break; // Break if end of argument or packet detected
           else argString[j - startIndex] = incomingPacket[j]; // Copy the next byte
         }
         argString[j] = '\0';

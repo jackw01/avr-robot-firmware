@@ -1,5 +1,5 @@
 // robot-bridge-firmware
-// Copyright 2018 jackw01. Released under the MIT License (see LICENSE for details).
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #include <stdint.h>
 #include <Arduino.h>
@@ -10,7 +10,7 @@
 #include "hbridgemotor.hpp"
 #include "constants.hpp"
 #include "util.hpp"
-#include "comms.hpp"
+#include "serialinterface.hpp"
 
 // Types for drive distance and velocity signals
 typedef struct {

@@ -1,5 +1,5 @@
 // robot-bridge-firmware
-// Copyright 2018 jackw01. Released under the MIT License (see LICENSE for details).
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #pragma once
 
@@ -77,25 +77,25 @@ const float ControllerSupplyVoltage = 5.0;
 // Communication
 // Serial settings
 const long SerialBaudRate = 115200;
-const uint8_t PacketMarkerByte = '\\';
-const uint8_t PacketSeparatorByte = ' ';
-const uint8_t CommsNumberWidth = 8;
-const uint8_t CommsFloatPrecision = 4;
 const long SystemStatusCheckIntervalUs = 1000000;
 
-// Datatypes
-const unsigned char DataTypeHumanReadable = 0;         // Expected: string
-const unsigned char DataTypeBatteryVoltage = 1;        // Expected: float
-const unsigned char DataTypeGyro = 2;                  // Expected: float[3]
-const unsigned char DataTypeDriveDistance = 3;         // Expected: float[2]
-const unsigned char DataTypeDriveControlData = 4;      // Expected: float[7]
-const unsigned char DataTypeFreeRAM = 5;               // Expected: int
+// Data and command types
+typedef enum : uint8_t {
+  DataTypeHumanReadable,         // Expected: string
+  DataTypeBatteryVoltage,        // Expected: float
+  DataTypeGyro,                  // Expected: float[3]
+  DataTypeDriveDistance,         // Expected: float[2]
+  DataTypeDriveControlData,      // Expected: float[7]
+  DataTypeFreeRAM                // Expected: int
+} DataType;
 
-const unsigned char CmdTypeSetDriveOpenLoop = 0;       // Expected: float[2]
-const unsigned char CmdTypeSetDriveClosedLoop = 1;     // Expected: float[2]
-const unsigned char CmdTypeEnableDriveClosedLoop = 2;  // Expected: none
-const unsigned char CmdTypeDisableDriveClosedLoop = 3; // Expected: none
-const unsigned char CmdTypeSetDrivePIDTuning = 4;      // Expected: float[3]
-const unsigned char CmdTypeSetAllStatusLEDs = 5;       // Expected: int[3]
-const unsigned char CmdTypeCalibrateGyro = 6;          // Expected: int
-const unsigned char CmdTypeResetDrive = 7;             // Expected: none
+typedef enum : uint8_t {
+  CmdTypeSetDriveOpenLoop,       // Expected: float[2]
+  CmdTypeSetDriveClosedLoop,     // Expected: float[2]
+  CmdTypeEnableDriveClosedLoop,  // Expected: none
+  CmdTypeDisableDriveClosedLoop, // Expected: none
+  CmdTypeSetDrivePIDTuning,      // Expected: float[3]
+  CmdTypeSetAllStatusLEDs,       // Expected: int[3]
+  CmdTypeCalibrateGyro,          // Expected: int
+  CmdTypeResetDrive              // Expected: none
+} CmdType;
