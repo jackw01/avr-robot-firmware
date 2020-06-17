@@ -67,9 +67,9 @@ float PIDAutotuner::tunePID(float input) {
   //      Ziegler-Nichols method
 
   // Calculate time delta
-  long prevMicroseconds = microseconds;
+  //long prevMicroseconds = microseconds;
   microseconds = micros();
-  float deltaT = microseconds - prevMicroseconds;
+  //float deltaT = microseconds - prevMicroseconds;
 
   // Calculate max and min
   max = max(max, input);

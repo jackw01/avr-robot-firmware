@@ -71,6 +71,9 @@ class Drive {
     DriveVelocity getVelocity();
 
   private:
+    // Serial
+    SerialInterface serial = SerialInterface::getInstance();
+    
     // Motors
     HBridgeMotor leftMotor = HBridgeMotor(PinMotorLPWM, PinMotorLDir);
     HBridgeMotor rightMotor = HBridgeMotor(PinMotorRPWM, PinMotorRDir);

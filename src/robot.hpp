@@ -18,6 +18,9 @@ class Robot {
     void tick();
 
   private:
+    // Serial
+    SerialInterface serial = SerialInterface::getInstance();
+
     // Subsystems
     IMU imu = IMU();
     Drive drive = Drive();
@@ -26,13 +29,6 @@ class Robot {
     // Timing
     long microseconds = 0;
     long lastMicroseconds = 0;
-
-    // Communication
-    bool parseIncomingPackets(uint8_t nextByte);
-    uint8_t incomingPacket[24];
-    uint8_t packetIndex = 0;
-    uint8_t packetType = 0;
-    float packetContents[4];
 
     // System things
     long lastStatusCheckMicroseconds = 0;

@@ -24,6 +24,9 @@ class IMU {
     vec3 getGyroOrientation();
 
   private:
+    // Serial
+    SerialInterface serial = SerialInterface::getInstance();
+
     // Sensors
     Adafruit_L3GD20_Unified gyro;
     Adafruit_LSM303_Accel_Unified accel;

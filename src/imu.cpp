@@ -10,12 +10,12 @@ IMU::IMU() {
 void IMU::init() {
   // Set up gyro
   gyro.enableAutoRange(false);
-  if (!gyro.begin()) SerialInterface::writePacket(0, "L3GD30 I2C gyro not detected");
-  else SerialInterface::writePacket(0, "L3GD30 I2C gyro connected");
-  if (!accel.begin()) SerialInterface::writePacket(0, "LSM303D I2C accel not detected");
-  else SerialInterface::writePacket(0, "LSM303D I2C accel connected");
-  if (!mag.begin()) SerialInterface::writePacket(0, "LSM303D I2C mag not detected");
-  else SerialInterface::writePacket(0, "LSM303D I2C mag connected");
+  if (!gyro.begin()) serial.writePacket(0, "L3GD30 I2C gyro not detected");
+  else serial.writePacket(0, "L3GD30 I2C gyro connected");
+  if (!accel.begin()) serial.writePacket(0, "LSM303D I2C accel not detected");
+  else serial.writePacket(0, "LSM303D I2C accel connected");
+  if (!mag.begin()) serial.writePacket(0, "LSM303D I2C mag not detected");
+  else serial.writePacket(0, "LSM303D I2C mag connected");
   delay(200); // Wait first - gyro returns bad data if queried immediately after initialization
 }
 

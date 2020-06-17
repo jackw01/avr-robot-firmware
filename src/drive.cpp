@@ -97,7 +97,7 @@ void Drive::setPID(float p, float i, float d) {
 // Update drivebase
 void Drive::update() {
   // Send odometry data
-  SerialInterface::writePacket(DataTypeDriveDistance, (float*)&getDistance(), 2);
+  serial.writePacket(DataTypeDriveDistance, (float*)&getDistance(), 2);
   // Update based on state
   if (currentState == DriveStateClosedLoop) {
     closedLoopUpdate();
@@ -132,7 +132,7 @@ void Drive::closedLoopUpdate() {
     leftVelocityPID.getSetpoint(), rightVelocityPID.getSetpoint(), vel.left, vel.right,
     newOutputL, newOutputR, vel.deltaT
   };
-  SerialInterface::writePacket(DataTypeDriveControlData, (float*)&data, 6);
+  serial.writePacket(DataTypeDriveControlData, (float*)&data, 6);
 }
 
 // Get whether robot is moving
@@ -153,7 +153,7 @@ DriveVelocity Drive::getVelocity() {
   DriveVelocity ret = {
     ((float)leftTicks - (float)prevLeftTicks) / EncoderCPR / GearRatio * LeftWheelCircumference / dT * 1000000.0,
     ((float)rightTicks - (float)prevRightTicks) / EncoderCPR / GearRatio * RightWheelCircumference / dT * 1000000.0,
-    dT
+    (float)dT
   };
   prevLeftTicks = leftTicks;
   prevRightTicks = rightTicks;
