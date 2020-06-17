@@ -82,7 +82,7 @@ void SerialInterface::leftPad(int n, char* buffer, int size, char padChar) {
 void SerialInterface::writePacketStart(uint8_t dataType) {
   writeOut(PacketStartByte);
   writeOut(QuoteByte);
-  char buffer[18];
+  char buffer[4] = "\0  ";
   leftPad(dataType, buffer, 3, '0');
   writeOut(buffer);
   writeOut(QuoteByte);
@@ -122,34 +122,34 @@ SerialInterface::Packet SerialInterface::readIncomingData() {
       memset(incomingPacket, 0, 24);
       packetIndex++;
       packetType = 0;
-    } else if (packetIndex >= 1 && packetIndex <= 3) { // Packet type (3-digit number)
+    } else if (packetIndex == 1 || packetIndex == 5) { // Quote marks around string
+      if (nextByte == QuoteByte) packetIndex++; // Is expected character?
+      else packetIndex = 0; // If not, reject packet
+    } else if (packetIndex >= 2 && packetIndex <= 4) { // Packet type (3-digit number)
       if (nextByte >= 48 && nextByte <= 57) { // If digit, set correct place value
-        packetType += pow10(3 - packetIndex) * (nextByte - 48);
+        packetType += pow10(4 - packetIndex) * (nextByte - 48);
         packetIndex++;
-      } else { // If not, reject packet
-        packetIndex = 0;
-        packetType = 0;
-      }
-    } else if (packetIndex == 4) { // Type separator
-      if (nextByte == TypeSeparatorByte) { // Is expected character?
-        packetIndex ++;
-      } else { // If not, reject packet
-        packetIndex = 0;
-        packetType = 0;
-      }
-    } else if (packetIndex > 4 && nextByte != PacketEndByte) { // Read arguments, stop at packet marker
-      incomingPacket[packetIndex - 5] = nextByte;
+      } else packetIndex = 0;
+    } else if (packetIndex == 6) { // Type separator
+      if (nextByte == TypeSeparatorByte) packetIndex ++;
+      else packetIndex = 0;
+    } else if (packetIndex == 7) { // Array Start
+      if (nextByte == ArrayStartByte) packetIndex ++;
+      else packetIndex = 0;
+    } else if (packetIndex > 7 && nextByte != PacketEndByte) { // Read packet contents
+      incomingPacket[packetIndex - 8] = nextByte;
       packetIndex ++;
-    } else if (packetIndex - 5 == sizeof(incomingPacket) || nextByte == PacketEndByte) { // Reached end of packet
-      // Parse arguments
-      for (uint8_t i = 0, startIndex = 0; i < sizeof(packetContents) / sizeof(float); i++) { // Go through args
-        if (startIndex < packetIndex - 5) {
+    } else if (packetIndex - 7 == sizeof(incomingPacket) || nextByte == PacketEndByte) { // End
+      for (uint8_t i = 0, startIndex = 0; i < sizeof(packetContents) / sizeof(float); i++) {
+        if (startIndex < packetIndex - 7) {
           char* argString = new char[8];
           memset(argString, 0, 8);
           uint8_t j;
-          for (j = startIndex; j < packetIndex - 5; j++) { // Iterate through bytes until end of packet
-            if (incomingPacket[j] == ContentSeparatorByte) break; // Break if end of argument or packet detected
-            else argString[j - startIndex] = incomingPacket[j]; // Copy the next byte
+          for (j = startIndex; j < packetIndex - 7; j++) {
+             // Break if end of argument or packet detected, else copy the next byte
+            if (incomingPacket[j] == ContentSeparatorByte
+                || incomingPacket[j] == ArrayEndByte) break;
+            else argString[j - startIndex] = incomingPacket[j];
           }
           argString[j] = '\0';
           startIndex = j + 1; // Set start index after each argument

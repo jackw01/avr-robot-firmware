@@ -14,9 +14,10 @@
 
 // Subsystems
 const bool EnableDrive = false;
-const bool EnableIMU = true;
+const bool EnableIMU = false;//true;
 const bool EnableVoltageMonitoring = true;
 const bool EnableDebugMessaging = true;
+const bool EnableSerialEcho = true;
 
 // Pin mapping
 const uint8_t PinMotorLPWM = 6;

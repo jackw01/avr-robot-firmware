@@ -29,7 +29,7 @@ void Robot::init() {
 void Robot::tick() {
   // Check for available data and parse packets
   SerialInterface::Packet packet;
-  while (true) {
+  while (true) { // Loop forever for now, but quit if nothing is ready
     packet = serial.readIncomingData();
     if (packet.ready) { // While data is available, process next byte
       if (packet.type == CmdTypeSetDriveOpenLoop) {
@@ -51,6 +51,8 @@ void Robot::tick() {
       } else if (packet.type == CmdTypeResetDrive) {
         drive.reset();
       }
+
+      if (EnableSerialEcho) serial.writePacket(packet.type, packet.contents, 4);
     } else break;
   };
 
