@@ -28,31 +28,40 @@ void SerialInterface::writePacket(uint8_t dataType, const char* data) {
 
 void SerialInterface::writePacket(uint8_t dataType, int data) {
   writePacketStart(dataType);
+  writeOut(ArrayStartByte);
   writePacketData(data);
+  writeOut(ArrayEndByte);
   writePacketEnd();
 }
 
 void SerialInterface::writePacket(uint8_t dataType, float data) {
   writePacketStart(dataType);
+  writeOut(ArrayStartByte);
   writePacketData(data);
+  writeOut(ArrayEndByte);
   writePacketEnd();
 }
 
 void SerialInterface::writePacket(uint8_t dataType, int data[], uint8_t len) {
   writePacketStart(dataType);
+  writeOut(ArrayStartByte);
   for (uint8_t i = 0; i < len; i++) {
     writePacketData(data[i]);
     if (i < len - 1) writeOut(ContentSeparatorByte);
   }
+  writeOut(ArrayEndByte);
   writePacketEnd();
 }
 
 void SerialInterface::writePacket(uint8_t dataType, float data[], uint8_t len) {
   writePacketStart(dataType);
+  writeOut(ArrayStartByte);
   for (uint8_t i = 0; i < len; i++) {
     writePacketData(data[i]);
     if (i < len - 1) writeOut(ContentSeparatorByte);
   }
+
+  writeOut(ArrayEndByte);
   writePacketEnd();
 }
 

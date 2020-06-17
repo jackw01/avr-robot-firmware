@@ -14,9 +14,11 @@ void Robot::init() {
   serial.begin(SerialBaudRate); // Start serial connection
 
   // Init subsystems
-  imu.init();
-  drive.init();
-  imu.calibrateGyro();
+  if (EnableDrive) drive.init();
+  if (EnableIMU) {
+    imu.init();
+    imu.calibrateGyro();
+  }
 
   // Initialization complete
   leds.setAll(ColorCyan);
@@ -59,25 +61,30 @@ void Robot::tick() {
     lastMicroseconds = microseconds;
 
     // Update subsystems
-    imu.update();
-    drive.update();
+    if (EnableIMU) {
+      imu.update();
+      // Send gyro data
+      vec3 gyroOrientation = imu.getGyroOrientation();
+      serial.writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
+    }
 
-    // Send gyro data
-    vec3 gyroOrientation = imu.getGyroOrientation();
-    serial.writePacket(DataTypeGyro, (float*)&gyroOrientation, 3);
+    if (EnableDrive) drive.update();
   }
 
-  // Send status/battery voltage over serial
+  // Status check loop runs at a lower speed
   if (microseconds - lastStatusCheckMicroseconds > SystemStatusCheckIntervalUs) {
     lastStatusCheckMicroseconds = microseconds;
 
-    serial.writePacket(DataTypeFreeRAM, getFreeRAM()); // Send RAM first
+    if (EnableDebugMessaging) serial.writePacket(DataTypeFreeRAM, getFreeRAM());
 
-    float voltage = measureBatteryVoltage();
-    serial.writePacket(DataTypeBatteryVoltage, voltage); // Send battery
-    if (voltage < BatteryLowCellVoltage * BatteryCellCount && !drive.getMoving()) { // Low battery warning
-      serial.writePacket(DataTypeHumanReadable, "Battery critically low. Shutting down.");
-      leds.blinkAll(ColorRed, ColorOff, 0, 500, 500);
+    if (EnableVoltageMonitoring) {
+      float voltage = measureBatteryVoltage();
+      serial.writePacket(DataTypeBatteryVoltage, voltage);
+      if (EnableLowVoltageCutoff &&
+          voltage < BatteryLowCellVoltage * BatteryCellCount && !drive.getMoving()) {
+        serial.writePacket(DataTypeHumanReadable, "Battery critically low. Shutting down.");
+        leds.blinkAll(ColorRed, ColorOff, 0, 500, 500);
+      }
     }
   }
 }

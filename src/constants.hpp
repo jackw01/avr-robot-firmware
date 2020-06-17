@@ -12,6 +12,12 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+// Subsystems
+const bool EnableDrive = false;
+const bool EnableIMU = true;
+const bool EnableVoltageMonitoring = true;
+const bool EnableDebugMessaging = true;
+
 // Pin mapping
 const uint8_t PinMotorLPWM = 6;
 const uint8_t PinMotorLDir = 7;
@@ -21,7 +27,8 @@ const uint8_t PinLeftEncoderA = 2;
 const uint8_t PinLeftEncoderB = 4;
 const uint8_t PinRightEncoderA = 3;
 const uint8_t PinRightEncoderB = 5;
-const uint8_t PinLEDs = 13;
+const uint8_t PinLEDs = 12;
+const uint8_t PinBoardStatusLED = 13;
 const uint8_t PinBatteryVoltageDivider = 3;
 
 // Drive control
@@ -69,6 +76,7 @@ const CRGB ColorWhite = CRGB(255, 255, 255);
 const CRGB ColorOff = CRGB(0, 0, 0);
 
 // Battery
+const bool EnableLowVoltageCutoff = false;
 const float BatteryLowCellVoltage = 0.8;
 const float BatteryCellCount = 5;
 const float BatteryDividerRatio = 2.0;
