@@ -14,7 +14,7 @@ const uint8_t NumberWidth = 8;
 const uint8_t FloatPrecision = 4;
 const uint8_t MaxContentLength = 4;
 
-void SerialInterface::begin(long baudRate) {
+void SerialInterface::begin(uint32_t baudRate) {
   Serial.begin(baudRate);
 }
 

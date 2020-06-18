@@ -21,7 +21,7 @@ class SerialInterface {
       float contents[4];
     };
 
-    void begin(long baudRate);
+    void begin(uint32_t baudRate);
     void writePacket(uint8_t dataType, const char* data);
     void writePacket(uint8_t dataType, int data);
     void writePacket(uint8_t dataType, float data);

@@ -8,7 +8,7 @@
 #include "serialinterface.hpp"
 #include "imu.hpp"
 #include "drive.hpp"
-#include "leds.hpp"
+#include "statusled.hpp"
 
 // Main robot class with methods for initializing and updating subsystems
 class Robot {
@@ -24,11 +24,11 @@ class Robot {
     // Subsystems
     IMU imu = IMU();
     Drive drive = Drive();
-    LEDs leds = LEDs();
+    StatusLED led = StatusLED();
 
     // Timing
-    long microseconds = 0;
-    long lastMicroseconds = 0;
+    uint32_t microseconds = 0;
+    uint32_t lastMicroseconds = 0;
 
     // System things
     long lastStatusCheckMicroseconds = 0;

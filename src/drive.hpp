@@ -9,7 +9,6 @@
 
 #include "hbridgemotor.hpp"
 #include "constants.hpp"
-#include "util.hpp"
 #include "serialinterface.hpp"
 
 // Types for drive distance and velocity signals
@@ -73,7 +72,7 @@ class Drive {
   private:
     // Serial
     SerialInterface serial = SerialInterface::getInstance();
-    
+
     // Motors
     HBridgeMotor leftMotor = HBridgeMotor(PinMotorLPWM, PinMotorLDir);
     HBridgeMotor rightMotor = HBridgeMotor(PinMotorRPWM, PinMotorRDir);

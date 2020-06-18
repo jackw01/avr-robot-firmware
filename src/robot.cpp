@@ -8,9 +8,8 @@ Robot::Robot() {
 
 // Initializes everything
 void Robot::init() {
-  leds.init(); // Turn on status lights before anything else
-  leds.setAll(ColorOrange);
-
+  led.init();
+  led.setState(true);
   serial.begin(SerialBaudRate); // Start serial connection
 
   // Init subsystems
@@ -21,7 +20,7 @@ void Robot::init() {
   }
 
   // Initialization complete
-  leds.setAll(ColorCyan);
+  led.setState(false);
   serial.writePacket(DataTypeHumanReadable, "Initialization complete");
 }
 
@@ -42,12 +41,10 @@ void Robot::tick() {
         drive.setState(DriveStateOpenLoop);
       } else if (packet.type == CmdTypeSetDrivePIDTuning) {
         drive.setPID(packet.contents[0], packet.contents[1], packet.contents[2]);
-      } else if (packet.type == CmdTypeSetAllStatusLEDs) {
-        leds.setAll(CRGB(packet.contents[0], packet.contents[1], packet.contents[2]));
       } else if (packet.type == CmdTypeCalibrateGyro) {
-        leds.setAll(ColorOrange);
+        led.setState(true);
         imu.calibrateGyro(packet.contents[0]);
-        leds.setAll(ColorCyan);
+        led.setState(false);
       } else if (packet.type == CmdTypeResetDrive) {
         drive.reset();
       }
@@ -58,7 +55,7 @@ void Robot::tick() {
 
   // Do timing-sensitive things
   microseconds = micros();
-  long deltaT = microseconds - lastMicroseconds; // Calculate time delta to rate limit the loop
+  uint32_t deltaT = microseconds - lastMicroseconds; // Rate limit the loop
   if (deltaT > MainControlLoopIntervalUs) {
     lastMicroseconds = microseconds;
 
@@ -71,11 +68,14 @@ void Robot::tick() {
     }
 
     if (EnableDrive) drive.update();
+
+    led.update(microseconds);
   }
 
   // Status check loop runs at a lower speed
   if (microseconds - lastStatusCheckMicroseconds > SystemStatusCheckIntervalUs) {
     lastStatusCheckMicroseconds = microseconds;
+    led.blink(100, 100);
 
     if (EnableDebugMessaging) serial.writePacket(DataTypeFreeRAM, getFreeRAM());
 
@@ -85,7 +85,7 @@ void Robot::tick() {
       if (EnableLowVoltageCutoff &&
           voltage < BatteryLowCellVoltage * BatteryCellCount && !drive.getMoving()) {
         serial.writePacket(DataTypeHumanReadable, "Battery critically low. Shutting down.");
-        leds.blinkAll(ColorRed, ColorOff, 0, 500, 500);
+        led.setState(true);
       }
     }
   }
