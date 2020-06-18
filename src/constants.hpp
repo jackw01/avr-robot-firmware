@@ -12,8 +12,9 @@
 #endif
 
 // Subsystems
-const bool EnableDrive = false;
+const bool EnableGPIO = true;
 const bool EnableIMU = false;//true;
+const bool EnableDrive = false;
 const bool EnableVoltageMonitoring = true;
 const bool EnableDebugMessaging = true;
 const bool EnableSerialEcho = false;
@@ -22,13 +23,14 @@ const bool EnableSerialEcho = false;
 const uint8_t PinMotorLPWM = 6;
 const uint8_t PinMotorLDir = 7;
 const uint8_t PinMotorRPWM = 11;
-const uint8_t PinMotorRDir = 10;
+const uint8_t PinMotorRDir = 12;
 const uint8_t PinLeftEncoderA = 2;
 const uint8_t PinLeftEncoderB = 4;
 const uint8_t PinRightEncoderA = 3;
 const uint8_t PinRightEncoderB = 5;
 const uint8_t PinBoardStatusLED = 13;
-const uint8_t PinBatteryVoltageDivider = 3;
+const uint8_t PinBatteryVoltageDivider = 17; // A3
+const uint8_t ExtraGPIOPins[] = {8, 9, 10, 14, 15, 16};
 
 // Drive control
 const uint32_t MainControlLoopIntervalUs = 50000; // Was 25000
@@ -78,7 +80,8 @@ typedef enum : uint8_t {
   DataTypeGyro,                  // Expected: float[3]
   DataTypeDriveDistance,         // Expected: float[2]
   DataTypeDriveControlData,      // Expected: float[7]
-  DataTypeFreeRAM                // Expected: int
+  DataTypeFreeRAM,               // Expected: int
+  DataTypeGPIOState,             // Expected: int
 } DataType;
 
 typedef enum : uint8_t {
@@ -88,5 +91,8 @@ typedef enum : uint8_t {
   CmdTypeDisableDriveClosedLoop, // Expected: none
   CmdTypeSetDrivePIDTuning,      // Expected: float[3]
   CmdTypeCalibrateGyro,          // Expected: int
-  CmdTypeResetDrive              // Expected: none
+  CmdTypeResetDrive,             // Expected: none
+  CmdTypeGPIOModeSet,            // Expected: int[2]
+  CmdTypeGPIOStateSet,           // Expected: int[2]
+  CmdTypeGPIOStateGet,           // Expected: int
 } CmdType;

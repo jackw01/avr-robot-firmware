@@ -27,7 +27,7 @@ class SerialInterface {
     void writePacket(uint8_t dataType, float data);
     void writePacket(uint8_t dataType, int data[], uint8_t len);
     void writePacket(uint8_t dataType, float data[], uint8_t len);
-    void leftPad(int n, char* buffer, int size, char padChar);
+    void leftPad(int16_t n, char* buffer, uint8_t size, char padChar);
 
     Packet readIncomingData();
 
@@ -47,7 +47,7 @@ class SerialInterface {
     void writeOut(char byte);
     void writeOut(const char* bytes);
 
-    int getAvailable();
+    int16_t getAvailable();
     uint8_t getNextByte();
 
     uint8_t pow10(uint8_t n);

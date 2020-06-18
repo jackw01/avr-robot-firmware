@@ -65,10 +65,10 @@ void SerialInterface::writePacket(uint8_t dataType, float data[], uint8_t len) {
   writePacketEnd();
 }
 
-void SerialInterface::leftPad(int n, char* buffer, int size, char padChar) {
+void SerialInterface::leftPad(int16_t n, char* buffer, uint8_t size, char padChar) {
   char string[8];
   itoa(n, string, 10);
-  int len = strlen(string);
+  uint8_t len = strlen(string);
   if (len < size) {
     char padString[2];
     padString[0] = padChar;
@@ -168,7 +168,7 @@ SerialInterface::Packet SerialInterface::readIncomingData() {
   return p;
 }
 
-int SerialInterface::getAvailable() {
+int16_t SerialInterface::getAvailable() {
   return Serial.available();
 }
 

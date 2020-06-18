@@ -6,9 +6,9 @@
 #include "constants.hpp"
 #include "util.hpp"
 #include "serialinterface.hpp"
+#include "statusled.hpp"
 #include "imu.hpp"
 #include "drive.hpp"
-#include "statusled.hpp"
 
 // Main robot class with methods for initializing and updating subsystems
 class Robot {
@@ -22,9 +22,9 @@ class Robot {
     SerialInterface serial = SerialInterface::getInstance();
 
     // Subsystems
+    StatusLED led = StatusLED();
     IMU imu = IMU();
     Drive drive = Drive();
-    StatusLED led = StatusLED();
 
     // Timing
     uint32_t microseconds = 0;

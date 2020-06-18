@@ -3,6 +3,13 @@
 
 #include "robot.hpp"
 
+// Get free RAM - found somewhere on Stackoverflow
+static int getFreeRAM() {
+  extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+}
+
 Robot::Robot() {
 }
 
@@ -13,11 +20,14 @@ void Robot::init() {
   serial.begin(SerialBaudRate); // Start serial connection
 
   // Init subsystems
-  if (EnableDrive) drive.init();
+  if (EnableGPIO) {
+    for (uint8_t i = 0; i < sizeof(ExtraGPIOPins); i++) pinMode(ExtraGPIOPins[i], INPUT);
+  }
   if (EnableIMU) {
     imu.init();
     imu.calibrateGyro();
   }
+  if (EnableDrive) drive.init();
 
   // Initialization complete
   led.setState(false);
@@ -31,22 +41,38 @@ void Robot::tick() {
   while (true) { // Loop forever for now, but quit if nothing is ready
     packet = serial.readIncomingData();
     if (packet.ready) { // While data is available, process next byte
-      if (packet.type == CmdTypeSetDriveOpenLoop) {
-        drive.setOpenLoopPower(packet.contents[0], packet.contents[1]);
-      } else if (packet.type == CmdTypeSetDriveClosedLoop) {
-        drive.setVelocitySetpoint({packet.contents[0], packet.contents[1]});
-      } else if (packet.type == CmdTypeEnableDriveClosedLoop) {
-        drive.setState(DriveStateClosedLoop);
-      } else if (packet.type == CmdTypeDisableDriveClosedLoop) {
-        drive.setState(DriveStateOpenLoop);
-      } else if (packet.type == CmdTypeSetDrivePIDTuning) {
-        drive.setPID(packet.contents[0], packet.contents[1], packet.contents[2]);
-      } else if (packet.type == CmdTypeCalibrateGyro) {
-        led.setState(true);
-        imu.calibrateGyro(packet.contents[0]);
-        led.setState(false);
-      } else if (packet.type == CmdTypeResetDrive) {
-        drive.reset();
+      if (EnableIMU) {
+        if (packet.type == CmdTypeCalibrateGyro) {
+          led.setState(true);
+          imu.calibrateGyro(packet.contents[0]);
+          led.setState(false);
+        }
+      }
+
+      if (EnableGPIO) {
+        if (packet.type == CmdTypeGPIOModeSet) {
+          pinMode(packet.contents[0], packet.contents[1]); // Cast float to bool, 1 for output
+        } else if (packet.type == CmdTypeGPIOStateSet) {
+          digitalWrite(packet.contents[0], packet.contents[1]);
+        } else if (packet.type == CmdTypeGPIOStateGet) {
+          serial.writePacket(DataTypeGPIOState, (int16_t)digitalRead(packet.contents[0]));
+        }
+      }
+
+      if (EnableDrive) {
+        if (packet.type == CmdTypeSetDriveOpenLoop) {
+          drive.setOpenLoopPower(packet.contents[0], packet.contents[1]);
+        } else if (packet.type == CmdTypeSetDriveClosedLoop) {
+          drive.setVelocitySetpoint({packet.contents[0], packet.contents[1]});
+        } else if (packet.type == CmdTypeEnableDriveClosedLoop) {
+          drive.setState(DriveStateClosedLoop);
+        } else if (packet.type == CmdTypeDisableDriveClosedLoop) {
+          drive.setState(DriveStateOpenLoop);
+        } else if (packet.type == CmdTypeSetDrivePIDTuning) {
+          drive.setPID(packet.contents[0], packet.contents[1], packet.contents[2]);
+        } else if (packet.type == CmdTypeResetDrive) {
+          drive.reset();
+        }
       }
 
       if (EnableSerialEcho) serial.writePacket(packet.type, packet.contents, 4);

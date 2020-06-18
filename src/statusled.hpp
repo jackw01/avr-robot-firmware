@@ -5,7 +5,6 @@
 
 #include "constants.hpp"
 
-// Container for StatusLED
 class StatusLED {
   public:
     struct LEDState {
