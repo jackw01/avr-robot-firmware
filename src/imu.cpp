@@ -47,9 +47,12 @@ void IMU::calibrateGyro(uint16_t samples) {
 void IMU::update() {
   sensors_event_t event;
   gyro.getEvent(&event);
-  lastGyro.roll = (event.gyro.v[IMURollAxis] - gyroOffset.v[IMURollAxis]) * GyroGain.v[IMURollAxis];
-  lastGyro.pitch = (event.gyro.v[IMUPitchAxis] - gyroOffset.v[IMUPitchAxis]) * GyroGain.v[IMUPitchAxis];
-  lastGyro.heading = (event.gyro.v[IMUHeadingAxis] - gyroOffset.v[IMUHeadingAxis]) * GyroGain.v[IMUHeadingAxis];
+  lastGyro.roll = (event.gyro.v[IMURollAxis] - gyroOffset.v[IMURollAxis])
+                  * GyroGain.v[IMURollAxis];
+  lastGyro.pitch = (event.gyro.v[IMUPitchAxis] - gyroOffset.v[IMUPitchAxis])
+                   * GyroGain.v[IMUPitchAxis];
+  lastGyro.heading = (event.gyro.v[IMUHeadingAxis] - gyroOffset.v[IMUHeadingAxis])
+                     * GyroGain.v[IMUHeadingAxis];
   currentGyro.roll += lastGyro.roll * MainControlLoopIntervalS;
   currentGyro.pitch += lastGyro.pitch * MainControlLoopIntervalS;
   currentGyro.heading += lastGyro.heading * MainControlLoopIntervalS;

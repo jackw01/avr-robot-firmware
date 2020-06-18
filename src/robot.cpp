@@ -56,6 +56,10 @@ void Robot::tick() {
           digitalWrite(packet.contents[0], packet.contents[1]);
         } else if (packet.type == CmdTypeGPIOStateGet) {
           serial.writePacket(DataTypeGPIOState, (int16_t)digitalRead(packet.contents[0]));
+        } else if (packet.type == CmdTypeGPIOPWMSet) {
+          analogWrite(packet.contents[0], packet.contents[1]);
+        } else if (packet.type == CmdTypeGPIOAnalogRead) {
+          serial.writePacket(DataTypeGPIOState, analogRead(packet.contents[0]));
         }
       }
 

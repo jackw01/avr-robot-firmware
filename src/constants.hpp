@@ -95,4 +95,6 @@ typedef enum : uint8_t {
   CmdTypeGPIOModeSet,            // Expected: int[2]
   CmdTypeGPIOStateSet,           // Expected: int[2]
   CmdTypeGPIOStateGet,           // Expected: int
+  CmdTypeGPIOPWMSet,             // Expected: int[2]
+  CmdTypeGPIOAnalogRead,         // Expected: int
 } CmdType;
