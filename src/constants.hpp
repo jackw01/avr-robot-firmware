@@ -15,6 +15,7 @@
 const bool EnableGPIO = true;
 const bool EnableIMU = false;//true;
 const bool EnableDrive = false;
+const bool EnableServos = true;
 const bool EnableVoltageMonitoring = true;
 const bool EnableDebugMessaging = true;
 const bool EnableSerialEcho = false;
@@ -30,7 +31,8 @@ const uint8_t PinRightEncoderA = 3;
 const uint8_t PinRightEncoderB = 5;
 const uint8_t PinBoardStatusLED = 13;
 const uint8_t PinBatteryVoltageDivider = 17; // A3
-const uint8_t ExtraGPIOPins[] = {8, 9, 10, 14, 15, 16};
+const uint8_t ServoPins[] = {9, 10};
+const uint8_t ExtraGPIOPins[] = {8, 14, 15, 16};
 
 // Drive control
 const uint32_t MainControlLoopIntervalUs = 50000; // Was 25000
@@ -97,4 +99,5 @@ typedef enum : uint8_t {
   CmdTypeGPIOStateGet,           // Expected: int
   CmdTypeGPIOPWMSet,             // Expected: int[2]
   CmdTypeGPIOAnalogRead,         // Expected: int
+  CmdTypeSetServoPosition,       // Expected: int[2]
 } CmdType;

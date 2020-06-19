@@ -2,6 +2,7 @@
 // Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #include <Arduino.h>
+#include <Servo.h>
 
 #include "constants.hpp"
 #include "util.hpp"
@@ -25,6 +26,7 @@ class Robot {
     StatusLED led = StatusLED();
     IMU imu = IMU();
     Drive drive = Drive();
+    Servo servos[sizeof(ServoPins)];
 
     // Timing
     uint32_t microseconds = 0;
