@@ -15,8 +15,9 @@ Robot::Robot() {
 
 // Initializes everything
 void Robot::init() {
-  led.init();
-  led.setState(true);
+  leds.init();
+  leds.setBoardLEDState(true);
+  leds.setAll(ColorOrange);
   serial.begin(SerialBaudRate); // Start serial connection
 
   // Init subsystems
@@ -30,7 +31,8 @@ void Robot::init() {
   if (EnableDrive) drive.init();
 
   // Initialization complete
-  led.setState(false);
+  leds.setBoardLEDState(false);
+  leds.setAll(LEDOff);
   serial.writePacket(DataTypeHumanReadable, "Initialization complete");
 }
 
@@ -43,9 +45,11 @@ void Robot::tick() {
     if (packet.ready) { // While data is available, process next byte
       if (EnableIMU) {
         if (packet.type == CmdTypeCalibrateGyro) {
-          led.setState(true);
+          leds.setBoardLEDState(true);
+          leds.setAll(ColorOrange);
           imu.calibrateGyro(packet.contents[0]);
-          led.setState(false);
+          leds.setBoardLEDState(false);
+          leds.setAll(LEDOff);
         }
       }
 
@@ -110,7 +114,12 @@ void Robot::tick() {
 
     if (EnableDrive) drive.update();
 
-    led.update(microseconds);
+    leds.update(microseconds);
+
+    if (deltaT - MainControlLoopIntervalUs > 24) {
+      serial.writePacket(DataTypeHumanReadable, "Loop running too slowly");
+      serial.writePacket(DataTypeHumanReadable, (int16_t)deltaT);
+    }
   }
 
   // Detach servos so the interrupts don't interfere with anything
@@ -122,7 +131,7 @@ void Robot::tick() {
   // Status check loop runs at a lower speed
   if (microseconds - lastStatusCheckMicroseconds > SystemStatusCheckIntervalUs) {
     lastStatusCheckMicroseconds = microseconds;
-    led.blink(100, 100);
+    leds.blinkBoardLED(100, 100);
 
     if (EnableDebugMessaging) serial.writePacket(DataTypeFreeRAM, getFreeRAM());
 
@@ -132,7 +141,7 @@ void Robot::tick() {
       if (EnableLowVoltageCutoff &&
           voltage < BatteryLowCellVoltage * BatteryCellCount && !drive.getMoving()) {
         serial.writePacket(DataTypeHumanReadable, "Battery critically low. Shutting down.");
-        led.setState(true);
+        leds.setBoardLEDState(true);
       }
     }
   }

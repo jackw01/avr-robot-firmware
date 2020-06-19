@@ -12,8 +12,8 @@
 #endif
 
 // Subsystems
-const bool EnableGPIO = false;
-const bool EnableIMU = false;//true;
+const bool EnableGPIO = true;
+const bool EnableIMU = true;
 const bool EnableDrive = false;
 const bool EnableServos = true;
 const bool EnableVoltageMonitoring = true;
@@ -30,12 +30,13 @@ const uint8_t PinLeftEncoderB = 4;
 const uint8_t PinRightEncoderA = 3;
 const uint8_t PinRightEncoderB = 5;
 const uint8_t PinBoardStatusLED = 13;
+const uint8_t PinLEDs = 8;
 const uint8_t PinBatteryVoltageDivider = 17; // A3
 const uint8_t ServoPins[] = {9, 10};
-const uint8_t ExtraGPIOPins[] = {8, 14, 15, 16};
+const uint8_t ExtraGPIOPins[] = {14, 15, 16};
 
 // Drive control
-const uint32_t MainControlLoopIntervalUs = 50000; // Was 25000
+const uint32_t MainControlLoopIntervalUs = 20000; // Was 25000
 const float MainControlLoopIntervalS = (float)MainControlLoopIntervalUs / 1000000.0;
 const float DriveP = 0.001;
 const float DriveI = 0.0008;
@@ -62,6 +63,10 @@ const uint8_t IMUHeadingAxis = 1;
 
 // Calibration data
 const vec3 GyroGain = {1.0, 1.0180888, 1.0};
+
+// LEDs
+const uint8_t LEDCount = 3;
+const uint8_t LEDMasterBrightness = 64;
 
 // Servos
 const uint32_t ServoTimeout = 1000000; // Time to wait before disabling servos

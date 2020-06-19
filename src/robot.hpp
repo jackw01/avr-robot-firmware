@@ -7,7 +7,7 @@
 #include "constants.hpp"
 #include "util.hpp"
 #include "serialinterface.hpp"
-#include "statusled.hpp"
+#include "leds.hpp"
 #include "imu.hpp"
 #include "drive.hpp"
 
@@ -23,7 +23,7 @@ class Robot {
     SerialInterface serial = SerialInterface::getInstance();
 
     // Subsystems
-    StatusLED led = StatusLED();
+    LEDs leds = LEDs();
     IMU imu = IMU();
     Drive drive = Drive();
     Servo servos[sizeof(ServoPins)];
