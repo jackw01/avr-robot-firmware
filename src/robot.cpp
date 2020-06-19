@@ -28,9 +28,6 @@ void Robot::init() {
     imu.calibrateGyro();
   }
   if (EnableDrive) drive.init();
-  if (EnableServos) {
-    for (uint8_t i = 0; i < sizeof(ServoPins); i++) servos[i].attach(ServoPins[i]);
-  }
 
   // Initialization complete
   led.setState(false);
@@ -84,6 +81,11 @@ void Robot::tick() {
 
       if (EnableServos) {
         if (packet.type == CmdTypeSetServoPosition) {
+          if (!servosAttached) {
+            for (uint8_t i = 0; i < sizeof(ServoPins); i++) servos[i].attach(ServoPins[i]);
+            lastServoAttachMicroseconds = micros();
+            servosAttached = true;
+          }
           servos[(uint8_t)packet.contents[0]].write(packet.contents[1]);
         }
       }
@@ -109,6 +111,12 @@ void Robot::tick() {
     if (EnableDrive) drive.update();
 
     led.update(microseconds);
+  }
+
+  // Detach servos so the interrupts don't interfere with anything
+  if (servosAttached && microseconds - lastServoAttachMicroseconds > ServoTimeout) {
+    for (uint8_t i = 0; i < sizeof(ServoPins); i++) servos[i].detach();
+    servosAttached = false;
   }
 
   // Status check loop runs at a lower speed

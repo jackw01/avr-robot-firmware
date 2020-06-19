@@ -2,6 +2,7 @@
 // Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #include <Arduino.h>
+#include <FastLED.h>
 
 #include "constants.hpp"
 
@@ -20,6 +21,7 @@ class StatusLED {
     void blink(uint16_t onTime, uint16_t offTime);
 
   private:
+    CRGB leds[10];
     static const uint8_t stateBufferSize = 4;
     LEDState stateBuffer[stateBufferSize];
     uint8_t stateBufferPos = 0;

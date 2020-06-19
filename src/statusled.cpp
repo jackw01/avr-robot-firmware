@@ -8,6 +8,9 @@ StatusLED::StatusLED() {
 
 void StatusLED::init() {
   pinMode(PinBoardStatusLED, OUTPUT);
+  pinMode(8, OUTPUT);
+  FastLED.addLeds<WS2812B, 8, GRB>(leds, 10);
+  FastLED.setCorrection(TypicalLEDStrip);
 }
 
 void StatusLED::update(uint32_t t) {
@@ -16,6 +19,8 @@ void StatusLED::update(uint32_t t) {
     for (uint8_t i = 0; i < stateBufferSize - 1; i++) stateBuffer[i] = stateBuffer[i + 1];
     stateBufferPos--;
   }
+  for (uint8_t i = 0; i < 10; i++) leds[i] = CRGB((t / 3921) % 255, 0, 0);
+  FastLED.show();
 }
 
 void StatusLED::setState(bool state) {

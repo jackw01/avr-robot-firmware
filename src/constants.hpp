@@ -12,7 +12,7 @@
 #endif
 
 // Subsystems
-const bool EnableGPIO = true;
+const bool EnableGPIO = false;
 const bool EnableIMU = false;//true;
 const bool EnableDrive = false;
 const bool EnableServos = true;
@@ -62,6 +62,9 @@ const uint8_t IMUHeadingAxis = 1;
 
 // Calibration data
 const vec3 GyroGain = {1.0, 1.0180888, 1.0};
+
+// Servos
+const uint32_t ServoTimeout = 1000000; // Time to wait before disabling servos
 
 // Battery
 const bool EnableLowVoltageCutoff = false;

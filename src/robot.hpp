@@ -32,6 +32,10 @@ class Robot {
     uint32_t microseconds = 0;
     uint32_t lastMicroseconds = 0;
 
+    // Servo timeout
+    bool servosAttached = false;
+    uint32_t lastServoAttachMicroseconds = 0;
+
     // System things
     long lastStatusCheckMicroseconds = 0;
     float measureBatteryVoltage();
