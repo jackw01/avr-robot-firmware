@@ -33,7 +33,7 @@ const uint8_t PinBoardStatusLED = 13;
 const uint8_t PinLEDs = 8;
 const uint8_t PinBatteryVoltageDivider = 17; // A3
 const uint8_t ServoPins[] = {9, 10};
-const uint8_t ExtraGPIOPins[] = {14, 15, 16};
+const uint8_t ExtraGPIOPins[] = {14, 15, 16, 20, 21};
 
 // Drive control
 const uint32_t MainControlLoopIntervalUs = 20000; // Was 25000
