@@ -1,10 +1,12 @@
-# robot-bridge-firmware
-AVR robot control firmware for interfacing between a Raspberry Pi or other computer and timing-sensitive hardware functions
+# avr-robot-firmware
+Robot hardware control firmware for AVR microcontrollers
 
-## What does it do?
-Raspberry Pi and other single-board computers are nice for robotics control applications, but they are not built for performing real-time functions such as motor control, reading rotary encoders, high-speed control loops, or interfacing with devices like WS2812B LEDs that use highly timing-sensitive protocols. AVR microcontrollers (Arduino) are very good at these things, but not so much at doing any serious computation.
+## Features
+* Closed-loop velocity control of two DC motors with rotary encoders
+* Control of two RC servo motors
+* Battery voltage monitoring
+* Full control of remaining digital I/O and analog input pins
+* Designed for easy interfacing with ROS or other software running on a computer
 
-This firmware allows a microcontroller to bridge the gap between high-level control code running on a computer and low-level hardware control functions requiring precise timing such as closed loop motor control.
-
-## Build and Deploy
-robot-bridge-firmware is built using the PlatformIO IDE. All ATMega328 boards are supported (32kb of program memory is required).
+## Hardware Support / Build Info
+avr-robot-firmware is developed for ATMega328-based systems as it is the most widely available 8-bit AVR microcontroller. This means that all ATMega328 Arduino boards are supported as well as other products such as the Pololu A-Star line of robot controllers. avr-robot-firmware is built using the PlatformIO IDE.
