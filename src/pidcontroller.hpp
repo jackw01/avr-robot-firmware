@@ -1,9 +1,5 @@
-// PID control implementation for Arduino and other AVR processors programmable with the Arduino IDE
-// Copyright (c) 2016-2018 jackw01
-// This code is distrubuted under the MIT License, see LICENSE for details
-
-#ifndef PID_H
-#define PID_H
+// Floating-point PID control implementation
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 class PID {
 public:
@@ -40,5 +36,3 @@ private:
   float totalError = 0;
   float prevInput = 0;
 };
-
-#endif

@@ -1,10 +1,5 @@
-// PID automated tuning (Ziegler-Nichols/relay method) for Arduino and compatible boards
-// Copyright (c) 2016-2018 jackw01
-// This code is distrubuted under the MIT License, see LICENSE for details
-
-#pragma once
-
-#include <Arduino.h>
+// PID automated tuning (Ziegler-Nichols/relay method)
+// Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -22,7 +17,6 @@ class PIDAutotuner {
     PIDAutotuner();
 
     // Configure parameters for PID tuning
-    // See README for more details - https://github.com/jackw01/arduino-pid-autotuner/blob/master/README.md
     // targetInputValue: the target value to tune to
     // loopInterval: PID loop interval in microseconds - must match whatever the PID loop being tuned runs at
     // outputRange: min and max values of the output that can be used to control the system (0, 255 for analogWrite)
@@ -34,13 +28,12 @@ class PIDAutotuner {
     void setZNMode(ZNMode zn);
     void setTuningCycles(int tuneCycles);
 
-    // Must be called immediately before the tuning loop starts
-    void startTuningLoop();
+    // Must be called immediately before the tuning loop starts with time in microseconds
+    void startTuningLoop(unsigned long micros);
 
     // Automatically tune PID
     // This function must be run in a loop at the same speed as the PID loop being tuned
-    // See README for more details - https://github.com/jackw01/arduino-pid-autotuner/blob/master/README.md
-    float tunePID(float input);
+    float tunePID(float input, unsigned long micros);
 
     // Get results of most recent tuning
     float getKp();

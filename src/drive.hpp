@@ -4,9 +4,9 @@
 #include <stdint.h>
 #include <Arduino.h>
 #include <FastGPIO.h>
-#include <pidcontroller.h>
-#include <pidautotuner.h>
 
+#include "pidcontroller.hpp"
+#include "pidautotuner.hpp"
 #include "hbridgemotor.hpp"
 #include "constants.hpp"
 #include "serialinterface.hpp"
