@@ -1,4 +1,4 @@
-// PID automated tuning (Ziegler-Nichols/relay method)
+// avr-robot-firmware
 // Copyright 2020 jackw01. Released under the MIT License (see LICENSE for details).
 
 #ifndef M_PI
